@@ -14,6 +14,7 @@
         <module>smartFuse-application</module>
         <module>smartFuse-interfaces</module>
         <module>smartFuse-common</module>
+        <module>smartFuse-openai</module>
     </modules>
 
     <properties>
@@ -23,6 +24,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.13.3</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
