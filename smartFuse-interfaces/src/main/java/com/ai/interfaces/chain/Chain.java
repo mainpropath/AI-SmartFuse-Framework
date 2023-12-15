@@ -3,9 +3,9 @@ package com.ai.interfaces.chain;
 import java.util.List;
 
 /**
- * @Description: 链条基础类
+ * @Description: 链条
  **/
-public abstract class BaseChain<T extends BaseChainNodeHandler> {
+public abstract class Chain<T extends ChainNodeHandler> {
 
     public List<T> chainList;
 
