@@ -3,7 +3,7 @@ package com.ai.interfaces.model;
 import com.ai.interfaces.message.ChatMessage;
 
 /**
- * @Description: 模型生成内容接口
+ * @Description: 模型
  **/
 public interface ChatLanguageModel {
 
