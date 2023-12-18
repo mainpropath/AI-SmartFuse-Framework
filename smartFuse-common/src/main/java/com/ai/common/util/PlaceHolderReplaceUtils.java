@@ -24,7 +24,7 @@ public class PlaceHolderReplaceUtils {
      * @param param        参数
      * @return 替换后的字符串
      */
-    public static String replaceWithMap(String sourceString, Map<String, Object> param) {
+    public static String replaceWithMap(String sourceString, Map<String, String> param) {
         if (StrUtil.isEmpty(sourceString) || ObjectUtil.isEmpty(pattern)) {
             return sourceString;
         }
@@ -35,9 +35,9 @@ public class PlaceHolderReplaceUtils {
             try {
                 String key = matcher.group();
                 String keyclone = key.substring(2, key.length() - 2).trim();
-                Object value = param.get(keyclone);
+                String value = param.get(keyclone);
                 if (value != null) {
-                    targetString = targetString.replace(key, value.toString());
+                    targetString = targetString.replace(key, value);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("String formatter failed", e);
