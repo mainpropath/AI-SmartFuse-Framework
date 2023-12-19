@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @Description: TODO
- **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

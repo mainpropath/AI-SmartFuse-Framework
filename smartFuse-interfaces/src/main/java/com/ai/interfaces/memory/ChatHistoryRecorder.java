@@ -9,9 +9,12 @@ import java.util.List;
  **/
 public interface ChatHistoryRecorder {
 
-    List<ChatMessage> getMessages(Object var1);
+    Object id();
 
-    void updateMessages(Object var1, List<ChatMessage> var2);
+    void add(ChatMessage message);
 
-    void deleteMessages(Object var1);
+    List<ChatMessage> messages();
+
+    void clear();
+
 }

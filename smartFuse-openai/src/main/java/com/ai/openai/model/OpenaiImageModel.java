@@ -1,6 +1,7 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.ai.interfaces.message.ChatMessage;
 import com.ai.interfaces.model.ChatLanguageModel;
 import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openAi.endPoint.images.req.CreateImageRequest;
@@ -29,5 +30,10 @@ public class OpenaiImageModel implements ChatLanguageModel<List<ImageObject>> {
         CreateImageRequest createImageRequest = CreateImageRequest.BuildBaseCreateImageRequest(userMessage);
         BeanUtil.copyProperties(parameter.getParameter(), createImageRequest);
         return OpenAiClient.getAggregationSession().getImageSession().createImageCompletions(NULL, NULL, NULL, createImageRequest);
+    }
+
+    @Override
+    public List<ImageObject> generate(List<ChatMessage> messageList) {
+        return null;
     }
 }
