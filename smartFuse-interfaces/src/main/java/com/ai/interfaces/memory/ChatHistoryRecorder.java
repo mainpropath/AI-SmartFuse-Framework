@@ -13,7 +13,7 @@ public interface ChatHistoryRecorder {
 
     void add(ChatMessage message);
 
-    List<ChatMessage> messages();
+    List<ChatMessage> getCurrentMessages();
 
     void clear();
 

@@ -7,9 +7,7 @@ import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openAi.endPoint.images.req.CreateImageRequest;
 import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.param.OpenaiImageModelParameter;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -19,11 +17,17 @@ import static com.ai.openAi.common.Constants.NULL;
  * @Description: 图片生成模型
  **/
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OpenaiImageModel implements ChatLanguageModel<List<ImageObject>> {
 
     private OpenaiImageModelParameter parameter;
+
+    public OpenaiImageModel() {
+        this.parameter = new OpenaiImageModelParameter();
+    }
+
+    public OpenaiImageModel(OpenaiImageModelParameter parameter) {
+        this.parameter = parameter;
+    }
 
     @Override
     public List<ImageObject> generate(String userMessage) {

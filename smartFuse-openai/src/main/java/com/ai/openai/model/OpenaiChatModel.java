@@ -9,9 +9,7 @@ import com.ai.openAi.endPoint.chat.resp.ChatCompletionResponse;
 import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.memory.message.OpenaiMessageFactory;
 import com.ai.openai.param.OpenaiChatModelParameter;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,11 +21,17 @@ import static com.ai.openAi.common.Constants.NULL;
  * @Description: 对话聊天模型
  **/
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OpenaiChatModel implements ChatLanguageModel<ChatCompletionResponse> {
 
     private OpenaiChatModelParameter parameter;
+
+    public OpenaiChatModel() {
+        this.parameter = new OpenaiChatModelParameter();
+    }
+
+    public OpenaiChatModel(OpenaiChatModelParameter parameter) {
+        this.parameter = parameter;
+    }
 
     @Override
     public ChatCompletionResponse generate(String userMessage) {

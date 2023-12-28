@@ -1,9 +1,7 @@
 package com.ai.interfaces.chain.handler;
 
-import java.util.Map;
-
 /**
- * @Description: 链条节点
+ * @Description: 链条节点，只负责处理某一项任务。
  **/
 public interface ChainNodeHandler<Input, Output> {
 

@@ -1,16 +1,14 @@
 package com.ai.openai.memory.message;
 
 import com.ai.interfaces.message.ChatMessage;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @Description: AI消息
  **/
-@Builder
 @Data
+@Builder
 public class OpenaiAssistantMessage implements ChatMessage {
 
     private String content;

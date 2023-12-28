@@ -3,7 +3,6 @@ package com.ai.openai.handler;
 import com.ai.interfaces.chain.handler.ChainNodeHandler;
 import com.ai.openAi.endPoint.chat.ChatChoice;
 import com.ai.openai.model.OpenaiChatModel;
-import com.ai.openai.param.OpenaiChatModelParameter;
 
 import java.util.List;
 
@@ -16,25 +15,17 @@ public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<String, S
 
     private OpenaiChatModel chatModel;
 
-    private OpenaiChatModelParameter parameter;
-
     public OpenaiTextDialogueNodeHandler() {
-        this(null, new OpenaiChatModel(), new OpenaiChatModelParameter());
+        this(null, new OpenaiChatModel());
     }
 
     public OpenaiTextDialogueNodeHandler(String msg) {
-        this(msg, new OpenaiChatModel(), new OpenaiChatModelParameter());
+        this(msg, new OpenaiChatModel());
     }
 
-    public OpenaiTextDialogueNodeHandler(String msg, OpenaiChatModelParameter parameter) {
-        this(msg, new OpenaiChatModel(), parameter);
-    }
-
-    public OpenaiTextDialogueNodeHandler(String msg, OpenaiChatModel chatModel, OpenaiChatModelParameter parameter) {
+    public OpenaiTextDialogueNodeHandler(String msg, OpenaiChatModel chatModel) {
         this.msg = msg;
         this.chatModel = chatModel;
-        this.parameter = parameter;
-        update();
     }
 
     public String execute() {
@@ -61,19 +52,6 @@ public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<String, S
 
     public void setChatModel(OpenaiChatModel chatModel) {
         this.chatModel = chatModel;
-        update();
     }
 
-    public OpenaiChatModelParameter getParameter() {
-        return parameter;
-    }
-
-    public void setParameter(OpenaiChatModelParameter parameter) {
-        this.parameter = parameter;
-        update();
-    }
-
-    private void update() {
-        this.chatModel.setParameter(parameter);
-    }
 }

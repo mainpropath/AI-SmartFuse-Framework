@@ -1,7 +1,6 @@
 package com.ai.openai.param;
 
 import com.ai.interfaces.param.Parameter;
-import com.ai.openAi.endPoint.chat.req.BaseChatCompletionRequest;
 import com.ai.openai.data.input.OpenaiChatParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -7,8 +7,8 @@ import lombok.Data;
 /**
  * @Description: 用户消息
  **/
-@Builder
 @Data
+@Builder
 public class OpenaiUserMessage implements ChatMessage {
 
     private String content;

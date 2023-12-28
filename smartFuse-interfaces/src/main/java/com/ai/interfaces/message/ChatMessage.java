@@ -5,8 +5,8 @@ package com.ai.interfaces.message;
  **/
 public interface ChatMessage {
 
-    public String type();
+    String type();
 
-    public String content();
+    String content();
 
 }
