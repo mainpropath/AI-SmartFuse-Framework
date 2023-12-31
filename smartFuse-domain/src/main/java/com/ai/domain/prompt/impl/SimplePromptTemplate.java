@@ -1,7 +1,8 @@
-package com.ai.domain.prompt;
+package com.ai.domain.prompt.impl;
 
 import com.ai.common.util.PlaceHolderReplaceUtils;
-import com.ai.interfaces.prompt.PromptTemplate;
+import com.ai.domain.prompt.PromptTemplate;
+import com.ai.domain.prompt.impl.SimplePrompt;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

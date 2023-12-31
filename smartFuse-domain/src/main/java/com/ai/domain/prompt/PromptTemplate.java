@@ -1,4 +1,4 @@
-package com.ai.interfaces.prompt;
+package com.ai.domain.prompt;
 
 import java.util.Map;
 

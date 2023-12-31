@@ -26,9 +26,8 @@ public class OpenaiEmbeddingNodeHandler implements ChainNodeHandler<String, List
 
     @Override
     public List<EmbeddingObject> execute(String parameter) {
-        ParamCheckUtils.checkStr(parameter, "embedding string cannot be empty.");
+        ParamCheckUtils.checkStr(parameter, "embedding parameter cannot be empty.");
         return embeddingModel.generate(parameter).getData();
     }
-
 
 }

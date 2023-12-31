@@ -1,5 +1,7 @@
 package com.ai.domain.prompt;
 
+import com.ai.domain.prompt.impl.SimplePrompt;
+import com.ai.domain.prompt.impl.SimplePromptTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

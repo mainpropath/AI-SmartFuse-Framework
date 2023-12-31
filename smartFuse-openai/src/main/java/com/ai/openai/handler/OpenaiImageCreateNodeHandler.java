@@ -26,7 +26,7 @@ public class OpenaiImageCreateNodeHandler implements ChainNodeHandler<String, Li
 
     @Override
     public List<ImageObject> execute(String parameter) {
-        ParamCheckUtils.checkStr(parameter, "handler request parameter is empty.");
+        ParamCheckUtils.checkStr(parameter, "image create parameter is empty.");
         return imageModel.generate(parameter);
     }
 

@@ -1,6 +1,6 @@
-package com.ai.domain.prompt;
+package com.ai.domain.prompt.impl;
 
-import com.ai.interfaces.prompt.Prompt;
+import com.ai.domain.prompt.Prompt;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
