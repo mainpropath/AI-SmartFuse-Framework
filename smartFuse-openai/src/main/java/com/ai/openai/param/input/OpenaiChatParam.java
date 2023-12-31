@@ -1,4 +1,4 @@
-package com.ai.openai.data.input;
+package com.ai.openai.param.input;
 
 import com.ai.openAi.endPoint.chat.ResponseFormat;
 import com.ai.openAi.endPoint.chat.req.BaseChatCompletionRequest;

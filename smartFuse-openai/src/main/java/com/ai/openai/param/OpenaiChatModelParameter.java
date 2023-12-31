@@ -1,21 +1,28 @@
 package com.ai.openai.param;
 
 import com.ai.interfaces.param.Parameter;
-import com.ai.openai.data.input.OpenaiChatParam;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.ai.openai.param.input.OpenaiChatParam;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OpenaiChatModelParameter implements Parameter<OpenaiChatParam> {
 
     private OpenaiChatParam param;
 
+    public OpenaiChatModelParameter() {
+        this(OpenaiChatParam.builder().build());
+    }
+
+    public OpenaiChatModelParameter(OpenaiChatParam param) {
+        this.param = param;
+    }
+
     @Override
     public OpenaiChatParam getParameter() {
-        if (param != null) return param;
-        return OpenaiChatParam.builder().build();
+        return param;
     }
+
+    @Override
+    public void SetParameter(OpenaiChatParam parameter) {
+        this.param = parameter;
+    }
+
 }

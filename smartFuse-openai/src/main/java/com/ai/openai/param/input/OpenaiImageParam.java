@@ -1,4 +1,4 @@
-package com.ai.openai.data.input;
+package com.ai.openai.param.input;
 
 import com.ai.openAi.endPoint.images.req.CreateImageRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

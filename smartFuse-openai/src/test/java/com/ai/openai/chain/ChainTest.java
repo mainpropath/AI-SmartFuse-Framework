@@ -9,6 +9,9 @@ import org.junit.Test;
 @Slf4j
 public class ChainTest {
 
+    /**
+     * 测试使用对话链
+     */
     @Test
     public void test_conversationalChain() {
         OpenaiConversationalChain chain = OpenaiConversationalChain.builder().build();

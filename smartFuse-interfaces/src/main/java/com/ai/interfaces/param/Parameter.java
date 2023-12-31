@@ -7,4 +7,6 @@ public interface Parameter<T> {
 
     T getParameter();
 
+    void SetParameter(T parameter);
+
 }

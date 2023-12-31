@@ -1,8 +1,8 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.interfaces.message.ChatMessage;
-import com.ai.interfaces.model.ChatLanguageModel;
+import com.ai.common.util.ParamCheckUtils;
+import com.ai.interfaces.model.Model;
 import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openAi.endPoint.images.req.CreateImageRequest;
 import com.ai.openai.client.OpenAiClient;
@@ -17,12 +17,12 @@ import static com.ai.openAi.common.Constants.NULL;
  * @Description: 图片生成模型
  **/
 @Data
-public class OpenaiImageModel implements ChatLanguageModel<List<ImageObject>> {
+public class OpenaiImageModel implements Model<String, List<ImageObject>> {
 
     private OpenaiImageModelParameter parameter;
 
     public OpenaiImageModel() {
-        this.parameter = new OpenaiImageModelParameter();
+        this(new OpenaiImageModelParameter());
     }
 
     public OpenaiImageModel(OpenaiImageModelParameter parameter) {
@@ -30,14 +30,11 @@ public class OpenaiImageModel implements ChatLanguageModel<List<ImageObject>> {
     }
 
     @Override
-    public List<ImageObject> generate(String userMessage) {
-        CreateImageRequest createImageRequest = CreateImageRequest.BuildBaseCreateImageRequest(userMessage);
+    public List<ImageObject> generate(String message) {
+        ParamCheckUtils.checkStr(message, "prompt cannot be empty");
+        CreateImageRequest createImageRequest = CreateImageRequest.BuildBaseCreateImageRequest(message);
         BeanUtil.copyProperties(parameter.getParameter(), createImageRequest);
         return OpenAiClient.getAggregationSession().getImageSession().createImageCompletions(NULL, NULL, NULL, createImageRequest);
     }
 
-    @Override
-    public List<ImageObject> generate(List<ChatMessage> messageList) {
-        return null;
-    }
 }

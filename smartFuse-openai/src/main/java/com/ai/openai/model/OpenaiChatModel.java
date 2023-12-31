@@ -1,8 +1,9 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.ai.common.util.ParamCheckUtils;
 import com.ai.interfaces.message.ChatMessage;
-import com.ai.interfaces.model.ChatLanguageModel;
+import com.ai.interfaces.model.Model;
 import com.ai.openAi.endPoint.chat.msg.DefaultMessage;
 import com.ai.openAi.endPoint.chat.req.DefaultChatCompletionRequest;
 import com.ai.openAi.endPoint.chat.resp.ChatCompletionResponse;
@@ -21,12 +22,12 @@ import static com.ai.openAi.common.Constants.NULL;
  * @Description: 对话聊天模型
  **/
 @Data
-public class OpenaiChatModel implements ChatLanguageModel<ChatCompletionResponse> {
+public class OpenaiChatModel implements Model<String, ChatCompletionResponse> {
 
     private OpenaiChatModelParameter parameter;
 
     public OpenaiChatModel() {
-        this.parameter = new OpenaiChatModelParameter();
+        this(new OpenaiChatModelParameter());
     }
 
     public OpenaiChatModel(OpenaiChatModelParameter parameter) {
@@ -34,13 +35,14 @@ public class OpenaiChatModel implements ChatLanguageModel<ChatCompletionResponse
     }
 
     @Override
-    public ChatCompletionResponse generate(String userMessage) {
+    public ChatCompletionResponse generate(String message) {
+        ParamCheckUtils.checkStr(message, "content cannot be empty");
         return this.generate(Collections.singletonList(OpenaiMessageFactory
-                .createChatMessage(userMessage, OpenaiMessageFactory.MessageType.USER)));
+                .createChatMessage(message, OpenaiMessageFactory.MessageType.USER)));
     }
 
-    @Override
     public ChatCompletionResponse generate(List<ChatMessage> messageList) {
+        ParamCheckUtils.checkList(messageList, "chat list cannot be empty");
         ArrayList<DefaultMessage> defaultMessages = new ArrayList<>();
         for (ChatMessage msg : messageList) {
             defaultMessages.add(DefaultMessage.builder().role(msg.type()).content(msg.content()).build());
