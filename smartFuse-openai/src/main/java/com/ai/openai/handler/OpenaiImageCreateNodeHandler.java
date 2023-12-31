@@ -1,5 +1,6 @@
 package com.ai.openai.handler;
 
+import cn.hutool.core.util.StrUtil;
 import com.ai.interfaces.chain.handler.ChainNodeHandler;
 import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openai.model.OpenaiImageModel;
@@ -34,7 +35,8 @@ public class OpenaiImageCreateNodeHandler implements ChainNodeHandler<String, Li
 
     @Override
     public List<ImageObject> execute(String parameter) {
-        return imageModel.generate(parameter);
+        if (!StrUtil.isEmpty(parameter)) return imageModel.generate(parameter);
+        throw new RuntimeException("Handler request parameter is empty.");
     }
 
     public String getMsg() {

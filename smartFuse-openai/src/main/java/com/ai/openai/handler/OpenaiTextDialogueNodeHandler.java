@@ -1,7 +1,9 @@
 package com.ai.openai.handler;
 
 import com.ai.interfaces.chain.handler.ChainNodeHandler;
+import com.ai.interfaces.message.ChatMessage;
 import com.ai.openAi.endPoint.chat.ChatChoice;
+import com.ai.openai.memory.message.OpenaiAssistantMessage;
 import com.ai.openai.model.OpenaiChatModel;
 
 import java.util.List;
@@ -9,9 +11,9 @@ import java.util.List;
 /**
  * @Description: 文本对话节点
  **/
-public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<String, String> {
+public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<List<ChatMessage>, OpenaiAssistantMessage> {
 
-    private String msg;
+    private List<ChatMessage> msgList;
 
     private OpenaiChatModel chatModel;
 
@@ -19,31 +21,34 @@ public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<String, S
         this(null, new OpenaiChatModel());
     }
 
-    public OpenaiTextDialogueNodeHandler(String msg) {
-        this(msg, new OpenaiChatModel());
+    public OpenaiTextDialogueNodeHandler(List<ChatMessage> msgList) {
+        this(msgList, new OpenaiChatModel());
     }
 
-    public OpenaiTextDialogueNodeHandler(String msg, OpenaiChatModel chatModel) {
-        this.msg = msg;
+    public OpenaiTextDialogueNodeHandler(List<ChatMessage> msgList, OpenaiChatModel chatModel) {
+        this.msgList = msgList;
         this.chatModel = chatModel;
     }
 
-    public String execute() {
-        return execute(msg);
+    public OpenaiAssistantMessage execute() {
+        return execute(msgList);
     }
 
     @Override
-    public String execute(String parameter) {
-        List<ChatChoice> choices = chatModel.generate(parameter).getChoices();
-        return choices.get(choices.size() - 1).getMessage().getContent();
+    public OpenaiAssistantMessage execute(List<ChatMessage> msgList) {
+        if (msgList == null || msgList.isEmpty()) {
+            throw new RuntimeException("Handler request parameter is empty.");
+        }
+        List<ChatChoice> choices = chatModel.generate(msgList).getChoices();
+        return OpenaiAssistantMessage.builder().content(choices.get(choices.size() - 1).getMessage().getContent()).build();
     }
 
-    public String getMsg() {
-        return msg;
+    public List<ChatMessage> getMsgList() {
+        return msgList;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMsgList(List<ChatMessage> msgList) {
+        this.msgList = msgList;
     }
 
     public OpenaiChatModel getChatModel() {

@@ -2,12 +2,10 @@ package com.ai.openai.memory.message;
 
 import com.ai.interfaces.message.ChatMessage;
 import lombok.Builder;
-import lombok.Data;
 
 /**
  * @Description: AI消息
  **/
-@Data
 @Builder
 public class OpenaiAssistantMessage implements ChatMessage {
 
