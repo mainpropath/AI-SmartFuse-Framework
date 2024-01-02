@@ -1,14 +1,15 @@
 package com.ai.openai.handler;
 
-import com.ai.common.util.ParamCheckUtils;
 import com.ai.interfaces.chain.handler.ChainNodeHandler;
 import com.ai.interfaces.message.ChatMessage;
 import com.ai.openAi.endPoint.chat.ChatChoice;
-import com.ai.openai.memory.message.OpenaiAssistantMessage;
+import com.ai.openai.memory.chat.message.OpenaiAssistantMessage;
 import com.ai.openai.model.OpenaiChatModel;
 import lombok.Data;
 
 import java.util.List;
+
+import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 
 /**
  * @Description: 文本对话节点
@@ -28,7 +29,7 @@ public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<List<Chat
 
     @Override
     public OpenaiAssistantMessage execute(List<ChatMessage> msgList) {
-        ParamCheckUtils.checkList(msgList, "chat parameter is empty.");
+        ensureNotEmpty(msgList, "chat parameter");
         List<ChatChoice> choices = chatModel.generate(msgList).getChoices();
         return OpenaiAssistantMessage.builder().content(choices.get(choices.size() - 1).getMessage().getContent()).build();
     }

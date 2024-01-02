@@ -23,7 +23,8 @@ public class OpenAiClient {
                 if (aggregationSession == null) {
                     Configuration configuration = new Configuration();
                     configuration.setApiHost("https://api.openai.com");
-                    configuration.setKeyList(Arrays.asList("填入你的API Key"));
+//                    configuration.setKeyList(Arrays.asList("填入你的API Key"));
+                    configuration.setKeyList(Arrays.asList("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"));
                     configuration.setKeyStrategy(new FirstKeyStrategy());
                     configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
                     OpenAiSessionFactory factory = new DefaultOpenAiSessionFactory(configuration);

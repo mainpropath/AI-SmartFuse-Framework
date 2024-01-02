@@ -1,7 +1,6 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.common.util.ParamCheckUtils;
 import com.ai.interfaces.model.Model;
 import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openAi.endPoint.images.req.CreateImageRequest;
@@ -11,6 +10,7 @@ import lombok.Data;
 
 import java.util.List;
 
+import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.openAi.common.Constants.NULL;
 
 /**
@@ -31,7 +31,7 @@ public class OpenaiImageModel implements Model<String, List<ImageObject>> {
 
     @Override
     public List<ImageObject> generate(String message) {
-        ParamCheckUtils.checkStr(message, "prompt cannot be empty");
+        ensureNotBlank(message, "chat message");
         CreateImageRequest createImageRequest = CreateImageRequest.BuildBaseCreateImageRequest(message);
         BeanUtil.copyProperties(parameter.getParameter(), createImageRequest);
         return OpenAiClient.getAggregationSession().getImageSession().createImageCompletions(NULL, NULL, NULL, createImageRequest);

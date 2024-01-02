@@ -1,12 +1,13 @@
 package com.ai.openai.handler;
 
-import com.ai.common.util.ParamCheckUtils;
 import com.ai.interfaces.chain.handler.ChainNodeHandler;
 import com.ai.openAi.endPoint.images.ImageObject;
 import com.ai.openai.model.OpenaiImageModel;
 import lombok.Data;
 
 import java.util.List;
+
+import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 
 /**
  * @Description: 图片生成节点
@@ -26,7 +27,7 @@ public class OpenaiImageCreateNodeHandler implements ChainNodeHandler<String, Li
 
     @Override
     public List<ImageObject> execute(String parameter) {
-        ParamCheckUtils.checkStr(parameter, "image create parameter is empty.");
+        ensureNotBlank(parameter, "image create parameter");
         return imageModel.generate(parameter);
     }
 

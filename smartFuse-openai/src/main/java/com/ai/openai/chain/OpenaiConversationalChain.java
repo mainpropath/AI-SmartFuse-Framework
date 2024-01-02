@@ -2,9 +2,9 @@ package com.ai.openai.chain;
 
 import com.ai.interfaces.chain.Chain;
 import com.ai.openai.handler.OpenaiTextDialogueNodeHandler;
-import com.ai.openai.memory.OpenaiChatHistoryRecorder;
-import com.ai.openai.memory.message.OpenaiAssistantMessage;
-import com.ai.openai.memory.message.OpenaiUserMessage;
+import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
+import com.ai.openai.memory.chat.message.OpenaiAssistantMessage;
+import com.ai.openai.memory.chat.message.OpenaiUserMessage;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,7 +17,6 @@ public class OpenaiConversationalChain implements Chain<String, String> {
 
     @Builder.Default
     private OpenaiTextDialogueNodeHandler textDialogueNodeHandler = new OpenaiTextDialogueNodeHandler();
-
     @Builder.Default
     private OpenaiChatHistoryRecorder historyRecorder = OpenaiChatHistoryRecorder.builder().build();
 

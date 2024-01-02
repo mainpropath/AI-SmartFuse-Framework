@@ -1,7 +1,6 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.common.util.ParamCheckUtils;
 import com.ai.interfaces.model.Model;
 import com.ai.openAi.endPoint.embeddings.req.EmbeddingCompletionRequest;
 import com.ai.openAi.endPoint.embeddings.resp.EmbeddingCompletionResponse;
@@ -11,6 +10,8 @@ import com.ai.openai.param.OpenaiEmbeddingModelParameter;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.ai.common.util.ValidationUtils.ensureNotBlank;
+import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 import static com.ai.openAi.common.Constants.NULL;
 
 /**
@@ -30,16 +31,14 @@ public class OpenaiEmbeddingModel implements Model<String, EmbeddingCompletionRe
 
     @Override
     public EmbeddingCompletionResponse generate(String message) {
-        ParamCheckUtils.checkStr(message, "content cannot be empty");
+        ensureNotBlank(message, "embedding string");
         return this.generate(Arrays.asList(message));
     }
 
     public EmbeddingCompletionResponse generate(List<String> msgList) {
-        ParamCheckUtils.checkList(msgList, "embedding list cannot be empty");
+        ensureNotEmpty(msgList, "embedding list");
         EmbeddingCompletionRequest embeddingCompletionRequest = EmbeddingCompletionRequest.BuildBaseEmbeddingCompletionRequest(msgList);
         BeanUtil.copyProperties(parameter.getParameter(), embeddingCompletionRequest);
         return OpenAiClient.getAggregationSession().getEmbeddingSession().embeddingCompletions(NULL, NULL, NULL, embeddingCompletionRequest);
     }
-
-
 }
