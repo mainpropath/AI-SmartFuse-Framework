@@ -15,8 +15,10 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * 文档检索聊天链
+ */
 @Data
 @Builder
 public class OpenaiConversationalRetrievalChain implements Chain<String, String> {
@@ -30,8 +32,6 @@ public class OpenaiConversationalRetrievalChain implements Chain<String, String>
     private SimplePromptTemplate promptTemplate = new SimplePromptTemplate("Answer the following question to the best of your ability: {{question}}\\n\\nBase your answer on the following information:\\n{{information}}", "default template");
     @Builder.Default
     private OpenaiEmbeddingStoreRetriever<TextSegment> retriever = OpenaiEmbeddingStoreRetriever.<TextSegment>builder().build();
-    @Builder.Default
-    private Map<String, String> paramMap = new HashMap<>();
 
     @Override
     public String run(String s) {
@@ -40,9 +40,9 @@ public class OpenaiConversationalRetrievalChain implements Chain<String, String>
         for (EmbeddingMatch<TextSegment> embeddingMatch : relevant) {
             stringBuilder.append(embeddingMatch.getMetadata().getText());
         }
-        paramMap.put("question", s);
-        paramMap.put("information", stringBuilder.toString());
-        historyRecorder.add(OpenaiUserMessage.builder().content(promptTemplate.render(paramMap)).build());
+        promptTemplate.add("question", s);
+        promptTemplate.add("information", stringBuilder.toString());
+        historyRecorder.add(OpenaiUserMessage.builder().content(promptTemplate.render()).build());
         OpenaiAssistantMessage openaiAssistantMessage = textDialogueNodeHandler.execute(historyRecorder.getCurrentMessages());
         historyRecorder.add(openaiAssistantMessage);
         return openaiAssistantMessage.content();

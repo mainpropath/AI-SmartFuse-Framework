@@ -1,7 +1,7 @@
 package com.ai.interfaces.message;
 
 /**
- * @Description: 聊天消息
+ * 聊天消息
  **/
 public interface ChatMessage {
 

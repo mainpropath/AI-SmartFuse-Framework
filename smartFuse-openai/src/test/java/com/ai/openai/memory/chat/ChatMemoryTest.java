@@ -4,16 +4,14 @@ import com.ai.interfaces.message.ChatMessage;
 import com.ai.openai.memory.chat.message.OpenaiAssistantMessage;
 import com.ai.openai.memory.chat.message.OpenaiSystemMessage;
 import com.ai.openai.memory.chat.message.OpenaiUserMessage;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Description: 测试记录功能
+ * 测试对话记录功能
  **/
-@Slf4j
 public class ChatMemoryTest {
 
     /**
@@ -34,7 +32,7 @@ public class ChatMemoryTest {
         }
         // 输出记录器当中的数据
         for (ChatMessage chatMessage : recorder.getCurrentMessages()) {
-            log.info("测试结果：{}", chatMessage);
+            System.out.println(chatMessage);
         }
     }
 
@@ -62,7 +60,7 @@ public class ChatMemoryTest {
         for (int i = 0; i < 3; i++) {
             OpenaiChatHistoryRecorder recorder = recorderList.get(i);
             for (ChatMessage chatMessage : recorder.getCurrentMessages()) {
-                log.info("第" + (i + 1) + "个测试结果：{}", chatMessage);
+                System.out.println("第" + (i + 1) + "个测试结果：" + chatMessage);
             }
         }
     }

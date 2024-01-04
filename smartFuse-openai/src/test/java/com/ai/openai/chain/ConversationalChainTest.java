@@ -1,0 +1,32 @@
+package com.ai.openai.chain;
+
+import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * 测试链路功能
+ **/
+public class ConversationalChainTest {
+
+    private OpenaiConversationalChain conversationalChain;
+
+    @Before
+    public void test_create_conversational_chain() {
+        // 创建一个记录器，记录器是不能重用的，即不能多个chain使用同一个记录器，否则就相当于多个会话公用同一个历史聊天记录。
+        // 但是记录器对应的存储器，及记录器当中的ChatMemoryStore是可以重用的，及存在多个记录器使用同一个存储器。
+        OpenaiChatHistoryRecorder recorder = OpenaiChatHistoryRecorder.builder().build();
+        // 可以在创建时指定记录器,也可以直接创建使用默认的记录器，默认存储30条消息。
+        this.conversationalChain = OpenaiConversationalChain.builder().build();
+    }
+
+    @Test
+    public void test_conversational_chain_run() {
+        OpenaiConversationalChain chain = OpenaiConversationalChain.builder().build();
+        String res1 = chain.run("你好，请记住我的名字叫做小明");
+        System.out.println(res1);// 你好，小明！很高兴认识你。
+        String res2 = chain.run("我的名字是什么？");
+        System.out.println(res2);// 你的名字是小明。
+    }
+
+}

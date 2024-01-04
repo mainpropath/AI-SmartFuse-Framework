@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class SimplePrompt implements Prompt {
 
     private String text;
+    private SimplePromptTemplate promptTemplate;
 
     @Override
     public String text() {

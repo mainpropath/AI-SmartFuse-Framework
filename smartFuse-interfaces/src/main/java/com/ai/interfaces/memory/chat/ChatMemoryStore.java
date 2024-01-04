@@ -4,6 +4,9 @@ import com.ai.interfaces.message.ChatMessage;
 
 import java.util.List;
 
+/**
+ * 历史聊天信息存储器
+ */
 public interface ChatMemoryStore {
 
     List<ChatMessage> getMessages(Object msg);

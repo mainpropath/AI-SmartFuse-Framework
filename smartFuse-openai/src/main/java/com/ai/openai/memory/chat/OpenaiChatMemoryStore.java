@@ -10,14 +10,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @Description: 存放历史信息
+ * Openai历史信息存储器
  **/
 @NoArgsConstructor
 public class OpenaiChatMemoryStore implements ChatMemoryStore {
 
-    /**
-     * 保证线程安全
-     */
     private final Map<Object, List<ChatMessage>> messagesByMemoryId = new ConcurrentHashMap<>();
 
     public List<ChatMessage> getMessages(Object memoryId) {

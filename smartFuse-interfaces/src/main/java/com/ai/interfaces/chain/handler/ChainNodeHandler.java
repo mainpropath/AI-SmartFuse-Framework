@@ -1,7 +1,7 @@
 package com.ai.interfaces.chain.handler;
 
 /**
- * @Description: 链条节点，只负责处理某一项任务。
+ * 链路节点，只负责处理某一项任务。
  **/
 public interface ChainNodeHandler<Input, Output> {
 

@@ -14,7 +14,7 @@ import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.openAi.common.Constants.NULL;
 
 /**
- * @Description: 图片生成模型
+ * 图片生成模型
  **/
 @Data
 public class OpenaiImageModel implements Model<String, List<ImageObject>> {

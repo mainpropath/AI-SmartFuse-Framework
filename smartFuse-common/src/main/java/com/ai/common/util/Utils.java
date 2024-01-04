@@ -31,13 +31,11 @@ public class Utils {
         if (strings == null || strings.length == 0) {
             return false;
         }
-
         for (String string : strings) {
             if (isNullOrBlank(string)) {
                 return false;
             }
         }
-
         return true;
     }
 

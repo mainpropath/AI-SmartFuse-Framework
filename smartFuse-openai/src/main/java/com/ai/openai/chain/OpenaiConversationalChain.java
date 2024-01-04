@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * @Description: 纯文本聊天链
+ * 纯文本聊天链
  **/
 @Data
 @Builder

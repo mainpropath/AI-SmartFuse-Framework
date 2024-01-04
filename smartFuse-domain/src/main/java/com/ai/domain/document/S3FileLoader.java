@@ -12,6 +12,7 @@ import static com.ai.domain.document.DocumentLoaderUtils.parserFor;
 
 
 public class S3FileLoader extends AbstractS3Loader<Document> {
+
     private final String key;
 
     private S3FileLoader(Builder builder) {

@@ -12,6 +12,9 @@ import java.io.InputStream;
 
 import static com.ai.domain.document.Document.DOCUMENT_TYPE;
 
+/**
+ * Office 套件解析器，word\ppt\excel
+ */
 public class MsOfficeDocumentParser implements DocumentParser {
 
     private final DocumentType documentType;

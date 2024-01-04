@@ -12,6 +12,9 @@ import java.io.InputStream;
 import static com.ai.domain.document.Document.DOCUMENT_TYPE;
 import static com.ai.domain.document.DocumentType.PDF;
 
+/**
+ * pdf 内容解析器
+ */
 public class PdfDocumentParser implements DocumentParser {
 
     @Override

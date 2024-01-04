@@ -2,20 +2,23 @@ package com.ai.openai.memory.embedding;
 
 import com.ai.openAi.endPoint.embeddings.EmbeddingObject;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static com.ai.common.util.Utils.randomUUID;
 
-@Data
-public class OpenaiEmbeddingMemoryStore<Metadata> {
+/**
+ * 嵌入数据存储器，存放在内存当中
+ */
+@lombok.Data
+public class OpenaiEmbeddingMemoryStore<Data> {
 
-    private final Map<String, Entry<Metadata>> idToEmbeddingData = new ConcurrentHashMap<>();
+    private final Map<String, Entry<Data>> idToEmbeddingData = new ConcurrentHashMap<>();
 
     public String add(EmbeddingObject embeddingObject) {
         String id = randomUUID();
@@ -27,14 +30,14 @@ public class OpenaiEmbeddingMemoryStore<Metadata> {
         add(id, embeddingObject, null);
     }
 
-    public String add(EmbeddingObject embeddingObject, Metadata metadata) {
+    public String add(EmbeddingObject embeddingObject, Data data) {
         String id = randomUUID();
-        add(id, embeddingObject, metadata);
+        add(id, embeddingObject, data);
         return id;
     }
 
-    public void add(String id, EmbeddingObject embeddingObject, Metadata metadata) {
-        idToEmbeddingData.put(id, new Entry(id, embeddingObject, metadata));
+    public void add(String id, EmbeddingObject embeddingObject, Data data) {
+        idToEmbeddingData.put(id, new Entry(id, embeddingObject, data));
     }
 
     public List<String> addAll(List<EmbeddingObject> embeddingObjects) {
@@ -45,7 +48,7 @@ public class OpenaiEmbeddingMemoryStore<Metadata> {
         return ids;
     }
 
-    public List<String> addAll(List<EmbeddingObject> embeddings, List<Metadata> embedded) {
+    public List<String> addAll(List<EmbeddingObject> embeddings, List<Data> embedded) {
         if (embeddings.size() != embedded.size()) {
             throw new IllegalArgumentException("The list of embeddings and embedded must have the same size");
         }
@@ -57,9 +60,17 @@ public class OpenaiEmbeddingMemoryStore<Metadata> {
         return ids;
     }
 
-    @Data
+    public Entry<Data> getData(String id) {
+        return idToEmbeddingData.get(id);
+    }
+
+    public List<Entry<Data>> getAllData() {
+        return idToEmbeddingData.values().stream().collect(Collectors.toList());
+    }
+
+    @lombok.Data
     @AllArgsConstructor
-    protected static class Entry<Metadata> {
+    public static class Entry<Metadata> {
         String id;
         EmbeddingObject embedding;
         Metadata metadata;
@@ -79,7 +90,6 @@ public class OpenaiEmbeddingMemoryStore<Metadata> {
             return Objects.hash(id, embedding, metadata);
         }
     }
-
 
 }
 

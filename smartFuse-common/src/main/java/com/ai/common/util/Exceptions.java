@@ -1,6 +1,8 @@
 package com.ai.common.util;
 
-
+/**
+ * 异常工具类
+ */
 public class Exceptions {
 
     public static IllegalArgumentException illegalArgument(String format, Object... args) {

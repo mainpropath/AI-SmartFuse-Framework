@@ -1,7 +1,6 @@
 package com.ai.domain.document;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,10 +16,8 @@ import static com.ai.domain.document.source.impl.FileSystemSource.from;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
 
+@Slf4j
 public class FileSystemDocumentLoader {
-
-    private static final Logger log = LoggerFactory.getLogger(FileSystemDocumentLoader.class);
-
 
     public static Document loadDocument(Path filePath) {
         return loadDocument(filePath, DocumentType.of(filePath.toString()));
@@ -29,7 +26,6 @@ public class FileSystemDocumentLoader {
     public static Document loadDocument(String filePath) {
         return loadDocument(Paths.get(filePath));
     }
-
 
     public static Document loadDocument(Path filePath, DocumentType documentType) {
         if (!isRegularFile(filePath)) {

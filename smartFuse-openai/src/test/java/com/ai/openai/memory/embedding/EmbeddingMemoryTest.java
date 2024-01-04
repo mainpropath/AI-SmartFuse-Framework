@@ -3,27 +3,42 @@ package com.ai.openai.memory.embedding;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
 import com.ai.domain.document.TextSegment;
-import com.ai.domain.document.splitter.DocumentSplitter;
-import com.ai.domain.document.splitter.impl.DocumentSplitters;
-import com.ai.openAi.endPoint.embeddings.EmbeddingObject;
-import com.ai.openai.chain.OpenaiConversationalRetrievalChain;
-import com.ai.openai.handler.OpenaiEmbeddingNodeHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-@Slf4j
+/**
+ * 嵌入测试
+ */
 public class EmbeddingMemoryTest {
 
-
-    private OpenaiConversationalRetrievalChain openaiConversationalRetrievalChain;
+    @Before
+    public void test_ingest() {
+        // 测试文件路径
+        String[] filePath = {"D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-中文.txt",
+                "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-英文.txt"};
+        // 创建嵌入数据导入器，这里可以设置你指定的存储器，也可以直接使用其中默认的存储器。
+        OpenaiEmbeddingStoreIngestor ingestor = OpenaiEmbeddingStoreIngestor.builder().build();
+        List<Document> documents = new ArrayList<>();
+        for (String file : filePath) {
+            // 导入数据并放入List当中
+            documents.add(FileSystemDocumentLoader.loadDocument(toPath(file)));
+        }
+        // 将数据导入到存储器当中
+        ingestor.ingest(documents);
+        // 获取存储器
+        OpenaiEmbeddingMemoryStore<TextSegment> store = ingestor.getStore();
+        // 获取存储器当中的数据
+        List<OpenaiEmbeddingMemoryStore.Entry<TextSegment>> allData = store.getAllData();
+        for (OpenaiEmbeddingMemoryStore.Entry<TextSegment> msg : allData) {
+            System.out.println(msg.getId() + " " + msg.getMetadata().getText() + " " + msg.getEmbedding());
+        }
+    }
 
     public static Path toPath(String fileName) {
         File file = new File(fileName);
@@ -35,48 +50,6 @@ public class EmbeddingMemoryTest {
             }
         }
         return null;
-    }
-
-    @Before
-    public void test_load() {
-        // 测试文件路径
-        String[] filePath = {"D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-中文.txt",
-                "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-英文.txt"};
-        // 创建文档分束器
-        DocumentSplitter splitter = DocumentSplitters.recursive(500, 0);
-        // 创建嵌入节点
-        OpenaiEmbeddingNodeHandler openaiEmbeddingNodeHandler = new OpenaiEmbeddingNodeHandler();
-        // 创建嵌入数据存储器
-        OpenaiEmbeddingMemoryStore<TextSegment> store = new OpenaiEmbeddingMemoryStore<>();
-        for (int i = 0; i < filePath.length; i++) {
-            Path path = toPath(filePath[i]);
-            Document document = FileSystemDocumentLoader.loadDocument(path);
-            List<TextSegment> segments = splitter.split(document);
-            // 开始对文档进行嵌入操作
-            List<String> collect = segments.stream().map(TextSegment::getText).collect(Collectors.toList());
-            List<EmbeddingObject> execute = openaiEmbeddingNodeHandler.execute(collect);
-            // 添加嵌入的数据到存储器当中
-            store.addAll(execute, segments);
-        }
-        // 创建嵌入数据索引器，设置对应的存储器
-        OpenaiEmbeddingStoreRetriever<TextSegment> retriever = OpenaiEmbeddingStoreRetriever.<TextSegment>builder()
-                .openaiEmbeddingMemoryStore(store).build();
-        // 创建 openaiConversationalRetrievalChain
-        this.openaiConversationalRetrievalChain = OpenaiConversationalRetrievalChain.builder().retriever(retriever).build();
-    }
-
-    @Test
-    public void test_embedding_data_retriever_with_en() {
-        String question = "What kind of person is Little Red Riding Hood?";
-        String res = openaiConversationalRetrievalChain.run(question);
-        log.info("模型回复：{}", res);
-    }
-
-    @Test
-    public void test_embedding_data_retriever_with_ch() {
-        String question = "小红帽是一个怎样的人？";
-        String res = openaiConversationalRetrievalChain.run(question);
-        log.info("模型回复：{}", res);
     }
 
 

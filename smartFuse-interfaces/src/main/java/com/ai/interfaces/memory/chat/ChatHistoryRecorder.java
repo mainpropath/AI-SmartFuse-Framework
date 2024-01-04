@@ -5,7 +5,7 @@ import com.ai.interfaces.message.ChatMessage;
 import java.util.List;
 
 /**
- * @Description: 历史聊天信息记录器
+ * 历史聊天信息记录器
  **/
 public interface ChatHistoryRecorder {
 

@@ -11,7 +11,7 @@ import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 
 /**
- * @Description: 嵌入节点
+ * 嵌入链路节点
  **/
 @Data
 public class OpenaiEmbeddingNodeHandler implements ChainNodeHandler<String, EmbeddingObject> {

@@ -12,6 +12,9 @@ import java.nio.charset.Charset;
 import static com.ai.domain.document.Document.DOCUMENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * 文本文件解析器
+ */
 public class TextDocumentParser implements DocumentParser {
 
     private final DocumentType documentType;

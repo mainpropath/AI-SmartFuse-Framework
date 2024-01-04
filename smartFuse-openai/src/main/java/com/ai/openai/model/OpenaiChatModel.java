@@ -20,7 +20,7 @@ import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 import static com.ai.openAi.common.Constants.NULL;
 
 /**
- * @Description: 对话聊天模型
+ * 对话聊天模型
  **/
 @Data
 public class OpenaiChatModel implements Model<String, ChatCompletionResponse> {

@@ -11,11 +11,14 @@ import static com.ai.common.util.ValidationUtils.ensureNotNull;
 import static com.ai.openai.handler.OpenaiEmbeddingNodeHandler.executeByStatic;
 import static java.util.Comparator.comparingDouble;
 
+/**
+ * 嵌入数据检索器
+ */
 @Builder
 public class OpenaiEmbeddingStoreRetriever<Metadata> {
 
     @Builder.Default
-    private final OpenaiEmbeddingMemoryStore<Metadata> openaiEmbeddingMemoryStore = new OpenaiEmbeddingMemoryStore<>();
+    private final OpenaiEmbeddingMemoryStore<Metadata> embeddingMemoryStore = new OpenaiEmbeddingMemoryStore<>();
     @Builder.Default
     private final int maxResults = 2;
     @Builder.Default
@@ -25,7 +28,7 @@ public class OpenaiEmbeddingStoreRetriever<Metadata> {
         ensureNotNull(embeddingObject, "embeddingObject");
         Comparator<EmbeddingMatch<Metadata>> comparator = comparingDouble(EmbeddingMatch::getScore);
         PriorityQueue<EmbeddingMatch<Metadata>> matches = new PriorityQueue<>(comparator);
-        openaiEmbeddingMemoryStore.getIdToEmbeddingData().forEach((key, value) -> {
+        embeddingMemoryStore.getIdToEmbeddingData().forEach((key, value) -> {
             double cosineSimilarity = CosineSimilarity.between(value.getEmbedding(), embeddingObject);
             double score = CosineSimilarity.fromCosineSimilarity(cosineSimilarity);
             if (score >= minScore) {

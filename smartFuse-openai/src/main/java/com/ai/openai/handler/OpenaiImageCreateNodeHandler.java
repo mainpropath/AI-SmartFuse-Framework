@@ -10,7 +10,7 @@ import java.util.List;
 import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 
 /**
- * @Description: 图片生成节点
+ * 图片生成链路节点
  **/
 @Data
 public class OpenaiImageCreateNodeHandler implements ChainNodeHandler<String, List<ImageObject>> {

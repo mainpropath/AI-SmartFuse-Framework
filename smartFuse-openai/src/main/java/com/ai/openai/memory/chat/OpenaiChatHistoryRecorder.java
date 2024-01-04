@@ -14,12 +14,11 @@ import java.util.Optional;
 import static com.ai.common.util.Utils.randomUUID;
 
 /**
- * @Description: 历史信息记录器
+ * Openai历史信息记录器
  */
 @Builder
 public class OpenaiChatHistoryRecorder implements ChatHistoryRecorder {
 
-    @NotNull
     @Builder.Default
     private final String id = randomUUID();
     @Builder.Default

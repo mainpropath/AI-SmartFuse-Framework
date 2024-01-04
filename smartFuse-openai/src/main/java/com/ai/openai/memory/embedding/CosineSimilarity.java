@@ -9,6 +9,9 @@ import java.util.List;
 import static com.ai.common.util.Exceptions.illegalArgument;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
 
+/**
+ * 相关性分析
+ */
 public class CosineSimilarity {
 
     public static double between(EmbeddingObject embeddingA, EmbeddingObject embeddingB) {

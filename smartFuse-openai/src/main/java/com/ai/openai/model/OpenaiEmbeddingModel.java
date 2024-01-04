@@ -15,7 +15,7 @@ import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 import static com.ai.openAi.common.Constants.NULL;
 
 /**
- * @Description: 文本嵌入模型
+ * 文本嵌入模型
  **/
 public class OpenaiEmbeddingModel implements Model<String, EmbeddingCompletionResponse> {
 

@@ -1,6 +1,5 @@
 package com.ai.domain.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.File;
@@ -8,22 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * @Description: 文档加载测试
+ * 文档加载测试
  **/
-@Slf4j
 public class DocumentTest {
-
-    public static Path toPath(String fileName) {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try {
-                return Paths.get(file.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
 
     @Test
     public void test_load_txt() {
@@ -44,6 +30,32 @@ public class DocumentTest {
         Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.pdf");
         Document document = FileSystemDocumentLoader.loadDocument(filePath);
         System.out.println(document);
+    }
+
+    @Test
+    public void test_load_excel() {
+        Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.xlsx");
+        Document document = FileSystemDocumentLoader.loadDocument(filePath);
+        System.out.println(document);
+    }
+
+    @Test
+    public void test_load_ppt() {
+        Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.pptx");
+        Document document = FileSystemDocumentLoader.loadDocument(filePath);
+        System.out.println(document);
+    }
+
+    public static Path toPath(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try {
+                return Paths.get(file.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }

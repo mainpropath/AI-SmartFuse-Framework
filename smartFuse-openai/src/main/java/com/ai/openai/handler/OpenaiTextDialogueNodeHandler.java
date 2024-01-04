@@ -12,7 +12,7 @@ import java.util.List;
 import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 
 /**
- * @Description: 文本对话节点
+ * 文本对话链路节点
  **/
 @Data
 public class OpenaiTextDialogueNodeHandler implements ChainNodeHandler<List<ChatMessage>, OpenaiAssistantMessage> {
