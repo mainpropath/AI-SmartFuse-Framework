@@ -1,33 +1,34 @@
 package com.ai.openai.memory.embedding;
 
 
+import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.document.Document;
-import com.ai.domain.document.TextSegment;
 import com.ai.domain.document.splitter.DocumentSplitter;
 import com.ai.domain.document.splitter.impl.DocumentSplitters;
-import com.ai.openAi.endPoint.embeddings.EmbeddingObject;
-import com.ai.openai.handler.OpenaiEmbeddingNodeHandler;
+import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
+import com.ai.domain.memory.embedding.EmbeddingStoreIngestor;
+import com.ai.domain.model.EmbeddingModel;
+import com.ai.openai.model.OpenaiEmbeddingModel;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 嵌入数据导入器
  */
 @Data
 @Builder
-public class OpenaiEmbeddingStoreIngestor {
+public class OpenaiEmbeddingStoreIngestor implements EmbeddingStoreIngestor {
 
     @Builder.Default
     private DocumentSplitter splitter = DocumentSplitters.recursive(500, 0);
     @Builder.Default
-    private OpenaiEmbeddingNodeHandler embeddingNodeHandler = new OpenaiEmbeddingNodeHandler();
+    private EmbeddingModel embeddingModel = new OpenaiEmbeddingModel();
     @Builder.Default
-    private OpenaiEmbeddingMemoryStore<TextSegment> store = new OpenaiEmbeddingMemoryStore<>();
+    private EmbeddingMemoryStore<Embedding> store = new OpenaiEmbeddingMemoryStore();
 
     public void ingest(Document document) {
         this.ingest(Collections.singletonList(document));
@@ -39,10 +40,8 @@ public class OpenaiEmbeddingStoreIngestor {
 
     public void ingest(List<Document> documents) {
         for (Document document : documents) {
-            List<TextSegment> segments = splitter.split(document);
-            List<String> collect = segments.stream().map(TextSegment::getText).collect(Collectors.toList());
-            List<EmbeddingObject> execute = embeddingNodeHandler.execute(collect);
-            store.addAll(execute, segments);
+            List<Embedding> data = embeddingModel.embedAll(splitter.split(document)).getData();
+            store.addAll(data);
         }
     }
 

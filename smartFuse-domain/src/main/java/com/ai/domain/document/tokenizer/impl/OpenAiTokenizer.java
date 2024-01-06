@@ -1,10 +1,10 @@
 package com.ai.domain.document.tokenizer.impl;
 
+import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.document.tokenizer.Tokenizer;
 import com.ai.domain.tools.ToolExecutionRequest;
 import com.ai.domain.tools.ToolParameters;
 import com.ai.domain.tools.ToolSpecification;
-import com.ai.interfaces.message.ChatMessage;
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 

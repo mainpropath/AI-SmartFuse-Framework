@@ -1,8 +1,9 @@
 package com.ai.openai.memory.embedding;
 
+import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
-import com.ai.domain.document.TextSegment;
+import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
 import org.junit.Before;
 
 import java.io.File;
@@ -16,6 +17,18 @@ import java.util.List;
  * 嵌入测试
  */
 public class EmbeddingMemoryTest {
+
+    public static Path toPath(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try {
+                return Paths.get(file.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     @Before
     public void test_ingest() {
@@ -32,24 +45,12 @@ public class EmbeddingMemoryTest {
         // 将数据导入到存储器当中
         ingestor.ingest(documents);
         // 获取存储器
-        OpenaiEmbeddingMemoryStore<TextSegment> store = ingestor.getStore();
+        EmbeddingMemoryStore<Embedding> store = ingestor.getStore();
         // 获取存储器当中的数据
-        List<OpenaiEmbeddingMemoryStore.Entry<TextSegment>> allData = store.getAllData();
-        for (OpenaiEmbeddingMemoryStore.Entry<TextSegment> msg : allData) {
-            System.out.println(msg.getId() + " " + msg.getMetadata().getText() + " " + msg.getEmbedding());
+        List<Embedding> allData = store.getAllData();
+        for (Embedding embedding : allData) {
+            System.out.println(embedding);
         }
-    }
-
-    public static Path toPath(String fileName) {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try {
-                return Paths.get(file.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
 

@@ -15,6 +15,12 @@ public class SplitterTest {
 
     private Document document;
 
+    public static void showRes(String[] strings) {
+        for (String res : strings) {
+            System.out.println(res);
+        }
+    }
+
     @Before
     public void test_load() {
         Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.txt");
@@ -54,12 +60,6 @@ public class SplitterTest {
         DocumentByWordSplitter documentByWordSplitter = new DocumentByWordSplitter(10, 0);
         String[] split = documentByWordSplitter.split(document.text());
         showRes(split);
-    }
-
-    public static void showRes(String[] strings) {
-        for (String res : strings) {
-            System.out.println(res);
-        }
     }
 
 }

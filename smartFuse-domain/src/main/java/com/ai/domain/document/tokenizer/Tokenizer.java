@@ -1,8 +1,8 @@
 package com.ai.domain.document.tokenizer;
 
+import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.tools.ToolExecutionRequest;
 import com.ai.domain.tools.ToolSpecification;
-import com.ai.interfaces.message.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;

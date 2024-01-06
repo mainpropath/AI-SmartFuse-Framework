@@ -11,6 +11,18 @@ import java.nio.file.Paths;
  **/
 public class DocumentTest {
 
+    public static Path toPath(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try {
+                return Paths.get(file.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     @Test
     public void test_load_txt() {
         Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.txt");
@@ -44,18 +56,6 @@ public class DocumentTest {
         Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.pptx");
         Document document = FileSystemDocumentLoader.loadDocument(filePath);
         System.out.println(document);
-    }
-
-    public static Path toPath(String fileName) {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try {
-                return Paths.get(file.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
 }

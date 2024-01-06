@@ -10,7 +10,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>smartFuse-domain</module>
-        <module>smartFuse-interfaces</module>
         <module>smartFuse-common</module>
         <module>smartFuse-openai</module>
     </modules>

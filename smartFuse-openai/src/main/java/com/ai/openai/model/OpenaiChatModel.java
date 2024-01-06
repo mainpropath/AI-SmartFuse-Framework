@@ -1,56 +1,84 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.interfaces.message.ChatMessage;
-import com.ai.interfaces.model.Model;
+import com.ai.common.usage.AiResponse;
+import com.ai.common.usage.TokenUsage;
+import com.ai.domain.data.message.AssistantMessage;
+import com.ai.domain.data.message.ChatMessage;
+import com.ai.domain.data.parameter.Parameter;
+import com.ai.domain.model.ChatModel;
+import com.ai.openAi.endPoint.chat.ChatChoice;
 import com.ai.openAi.endPoint.chat.msg.DefaultMessage;
 import com.ai.openAi.endPoint.chat.req.DefaultChatCompletionRequest;
 import com.ai.openAi.endPoint.chat.resp.ChatCompletionResponse;
 import com.ai.openai.client.OpenAiClient;
-import com.ai.openai.memory.chat.message.OpenaiMessageFactory;
-import com.ai.openai.param.OpenaiChatModelParameter;
+import com.ai.openai.parameter.OpenaiChatModelParameter;
+import com.ai.openai.parameter.input.OpenaiChatParameter;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
+import static com.ai.common.util.ValidationUtils.ensureNotNull;
 import static com.ai.openAi.common.Constants.NULL;
+import static com.ai.openai.converter.BeanConverter.usage2tokenUsage;
 
 /**
- * 对话聊天模型
+ * openai对话聊天模型
  **/
 @Data
-public class OpenaiChatModel implements Model<String, ChatCompletionResponse> {
+public class OpenaiChatModel implements ChatModel {
 
-    private OpenaiChatModelParameter parameter;
+    private Parameter<OpenaiChatParameter> parameter;
 
     public OpenaiChatModel() {
         this(new OpenaiChatModelParameter());
     }
 
-    public OpenaiChatModel(OpenaiChatModelParameter parameter) {
-        this.parameter = parameter;
+    public OpenaiChatModel(Parameter<OpenaiChatParameter> parameter) {
+        this.parameter = ensureNotNull(parameter, "parameter");
     }
 
     @Override
-    public ChatCompletionResponse generate(String message) {
-        ensureNotBlank(message, "chat message");
-        return this.generate(Collections.singletonList(OpenaiMessageFactory
-                .createChatMessage(message, OpenaiMessageFactory.MessageType.USER)));
+    public AiResponse<AssistantMessage> generate(List<ChatMessage> messages) {
+        ensureNotEmpty(messages, "messages");
+        // 转换历史消息
+        List<DefaultMessage> defaultMessages = chatMessageList2DefaultMessageList(messages);
+        // 构造请求参数
+        DefaultChatCompletionRequest request = createRequestParameter(defaultMessages);
+        // 发送请求获取结果
+        ChatCompletionResponse response = OpenAiClient.getAggregationSession()
+                .getChatSession()
+                .chatCompletions(NULL, NULL, NULL, request);
+        return createAiResponse(response);
     }
 
-    public ChatCompletionResponse generate(List<ChatMessage> messageList) {
-        ensureNotEmpty(messageList, "chat message-list");
-        ArrayList<DefaultMessage> defaultMessages = new ArrayList<>();
-        for (ChatMessage msg : messageList) {
-            defaultMessages.add(DefaultMessage.builder().role(msg.type()).content(msg.content()).build());
-        }
-        DefaultChatCompletionRequest defaultChatCompletionRequest = DefaultChatCompletionRequest.builder().messages(defaultMessages).build();
-        BeanUtil.copyProperties(parameter.getParameter(), defaultChatCompletionRequest);
-        return OpenAiClient.getAggregationSession().getChatSession().chatCompletions(NULL, NULL, NULL, defaultChatCompletionRequest);
+    private AiResponse<AssistantMessage> createAiResponse(ChatCompletionResponse response) {
+        // 构造对话内容
+        List<ChatChoice> choices = response.getChoices();
+        AssistantMessage assistantMessage = new AssistantMessage(choices.get(choices.size() - 1).getMessage().getContent());
+        // 构造token使用情况
+        TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
+        return new AiResponse<>(assistantMessage, tokenUsage, response.getFinishReason());
+    }
+
+    private List<DefaultMessage> chatMessageList2DefaultMessageList(List<ChatMessage> chatMessages) {
+        return chatMessages.stream()
+                .map(chatMessage -> DefaultMessage.builder()
+                        .role(chatMessage.type().getMessageType())
+                        .content(chatMessage.text())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private DefaultChatCompletionRequest createRequestParameter(List<DefaultMessage> defaultMessages) {
+        DefaultChatCompletionRequest request = DefaultChatCompletionRequest
+                .builder()
+                .messages(defaultMessages)
+                .build();
+        BeanUtil.copyProperties(parameter.getParameter(), request);
+        return request;
     }
 
 }

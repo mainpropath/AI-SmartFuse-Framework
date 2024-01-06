@@ -1,9 +1,9 @@
 package com.ai.openai.memory.chat;
 
-import com.ai.interfaces.message.ChatMessage;
-import com.ai.openai.memory.chat.message.OpenaiAssistantMessage;
-import com.ai.openai.memory.chat.message.OpenaiSystemMessage;
-import com.ai.openai.memory.chat.message.OpenaiUserMessage;
+import com.ai.domain.data.message.AssistantMessage;
+import com.ai.domain.data.message.ChatMessage;
+import com.ai.domain.data.message.SystemMessage;
+import com.ai.domain.data.message.UserMessage;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ public class ChatMemoryTest {
         for (int i = 0; i < 15; i++) {
             if (i % 2 == 0) {
                 // 如果添加的是系统消息，会进行去重判断
-                recorder.add(OpenaiSystemMessage.builder().content(1 + " ").build());
+                recorder.add(new SystemMessage(1 + " "));
             } else {
-                recorder.add(OpenaiAssistantMessage.builder().content(i + " ").build());
+                recorder.add(new AssistantMessage(i + " "));
             }
         }
         // 输出记录器当中的数据
@@ -54,7 +54,7 @@ public class ChatMemoryTest {
         }
         // 向三个记录器当中添加数据
         for (int i = 0; i < 100; i++) {
-            recorderList.get(i % 3).add(OpenaiUserMessage.builder().content(i % 3 + " ").build());
+            recorderList.get(i % 3).add(new UserMessage(i % 3 + " "));
         }
         // 输出记录器当中的数据
         for (int i = 0; i < 3; i++) {

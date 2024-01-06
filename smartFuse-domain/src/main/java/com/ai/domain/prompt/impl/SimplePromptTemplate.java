@@ -3,7 +3,6 @@ package com.ai.domain.prompt.impl;
 import com.ai.common.util.PlaceHolderReplaceUtils;
 import com.ai.domain.prompt.PromptTemplate;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +14,9 @@ import static com.ai.common.util.ValidationUtils.ensureNotNull;
  **/
 public class SimplePromptTemplate implements PromptTemplate {
 
+    private final Map<String, String> renderMap = new HashMap<>();
     private String template;
     private String promptName;
-    private final Map<String, String> renderMap = new HashMap<>();
 
     public SimplePromptTemplate(String template, String promptName) {
         this.template = ensureNotBlank(template, "template");

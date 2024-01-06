@@ -1,6 +1,8 @@
 package com.ai.openai.chain;
 
+import com.ai.domain.chain.impl.ConversationalChain;
 import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
+import com.ai.openai.model.OpenaiChatModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +11,7 @@ import org.junit.Test;
  **/
 public class ConversationalChainTest {
 
-    private OpenaiConversationalChain conversationalChain;
+    private ConversationalChain conversationalChain;
 
     @Before
     public void test_create_conversational_chain() {
@@ -17,15 +19,17 @@ public class ConversationalChainTest {
         // 但是记录器对应的存储器，及记录器当中的ChatMemoryStore是可以重用的，及存在多个记录器使用同一个存储器。
         OpenaiChatHistoryRecorder recorder = OpenaiChatHistoryRecorder.builder().build();
         // 可以在创建时指定记录器,也可以直接创建使用默认的记录器，默认存储30条消息。
-        this.conversationalChain = OpenaiConversationalChain.builder().build();
+        this.conversationalChain = ConversationalChain.builder()
+                .chatModel(new OpenaiChatModel())
+                .historyRecorder(OpenaiChatHistoryRecorder.builder().build())
+                .build();
     }
 
     @Test
     public void test_conversational_chain_run() {
-        OpenaiConversationalChain chain = OpenaiConversationalChain.builder().build();
-        String res1 = chain.run("你好，请记住我的名字叫做小明");
+        String res1 = conversationalChain.run("你好，请记住我的名字叫做小明");
         System.out.println(res1);// 你好，小明！很高兴认识你。
-        String res2 = chain.run("我的名字是什么？");
+        String res2 = conversationalChain.run("我的名字是什么？");
         System.out.println(res2);// 你的名字是小明。
     }
 

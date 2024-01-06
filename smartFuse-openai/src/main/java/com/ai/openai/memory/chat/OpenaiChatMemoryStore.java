@@ -1,7 +1,7 @@
 package com.ai.openai.memory.chat;
 
-import com.ai.interfaces.memory.chat.ChatMemoryStore;
-import com.ai.interfaces.message.ChatMessage;
+import com.ai.domain.data.message.ChatMessage;
+import com.ai.domain.memory.chat.ChatMemoryStore;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
