@@ -5,6 +5,8 @@ import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
 import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -18,17 +20,7 @@ import java.util.List;
  */
 public class EmbeddingMemoryTest {
 
-    public static Path toPath(String fileName) {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try {
-                return Paths.get(file.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+    private OpenaiEmbeddingMemoryStore embeddingMemoryStore;
 
     @Before
     public void test_ingest() {
@@ -45,13 +37,37 @@ public class EmbeddingMemoryTest {
         // 将数据导入到存储器当中
         ingestor.ingest(documents);
         // 获取存储器
-        EmbeddingMemoryStore<Embedding> store = ingestor.getStore();
+        this.embeddingMemoryStore = (OpenaiEmbeddingMemoryStore) ingestor.getStore();
         // 获取存储器当中的数据
-        List<Embedding> allData = store.getAllData();
-        for (Embedding embedding : allData) {
-            System.out.println(embedding);
-        }
+        List<Embedding> allData = embeddingMemoryStore.getAllData();
+//        for (Embedding embedding : allData) {
+//            System.out.println(embedding);
+//        }
     }
 
+    @Test
+    public void test_serialize_to_file() {
+        String filePath = "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\EmbeddingMemoryStoreTest.txt";
+        this.embeddingMemoryStore.serializeToFile(toPath(filePath));
+    }
+
+    @Test
+    public void test_load_from_file() {
+        String filePath = "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\EmbeddingMemoryStoreTest.txt";
+        EmbeddingMemoryStore<Embedding> embeddingEmbeddingMemoryStore = OpenaiEmbeddingMemoryStore.fromFile(toPath(filePath));
+        System.out.println(embeddingEmbeddingMemoryStore.getAllData());
+    }
+
+    public static Path toPath(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try {
+                return Paths.get(file.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
 }
