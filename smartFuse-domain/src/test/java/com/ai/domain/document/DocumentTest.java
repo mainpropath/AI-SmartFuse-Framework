@@ -24,6 +24,22 @@ public class DocumentTest {
     }
 
     @Test
+    public void test_load() {
+        String[] filePaths = {
+                "文件路径\\中文测试.txt",
+                "文件路径\\中文测试.docx",
+                "文件路径\\中文测试.pdf",
+                "文件路径\\中文测试.xlsx",
+                "文件路径\\中文测试.pptx"
+        };
+        for (String filePath : filePaths) {
+            Document document = FileSystemDocumentLoader.loadDocument(filePath);
+            System.out.println(document.text());
+            System.out.println(document.metadata());
+        }
+    }
+
+    @Test
     public void test_load_txt() {
         Path filePath = toPath("D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\中文测试.txt");
         Document document = FileSystemDocumentLoader.loadDocument(filePath);

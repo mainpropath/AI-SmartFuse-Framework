@@ -24,7 +24,7 @@ public class OpenaiEmbeddingStoreRetriever implements EmbeddingStoreRetriever<Em
     @Builder.Default
     private final int maxResults = 2;
     @Builder.Default
-    private final Double minScore = 0.5;
+    private final Double minScore = 0.7;
 
     public List<EmbeddingMatch> findRelevant(Embedding embedding, int maxResults, double minScore) {
         ensureNotNull(embedding, "embedding");

@@ -24,7 +24,30 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 @lombok.Data
 public class OpenaiEmbeddingMemoryStore implements EmbeddingMemoryStore<Embedding> {
 
+    private static final EmbeddingStoreJsonCodec CODEC = loadCodec();
     private final Map<String, Embedding> idToEmbeddingData = new ConcurrentHashMap<>();
+
+    private static EmbeddingStoreJsonCodec loadCodec() {
+        Collection<EmbeddingStoreJsonCodecFactory> factories = ServiceHelper.loadFactories(
+                EmbeddingStoreJsonCodecFactory.class);
+        for (EmbeddingStoreJsonCodecFactory factory : factories) {
+            return factory.create();
+        }
+        return new GsonInMemoryEmbeddingStoreJsonCodec();
+    }
+
+    public static EmbeddingMemoryStore<Embedding> fromJson(String json) {
+        return CODEC.fromJson(json);
+    }
+
+    public static EmbeddingMemoryStore<Embedding> fromFile(Path filePath) {
+        try {
+            String json = new String(Files.readAllBytes(filePath));
+            return fromJson(json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public String add(Embedding embedding) {
@@ -50,30 +73,6 @@ public class OpenaiEmbeddingMemoryStore implements EmbeddingMemoryStore<Embeddin
     @Override
     public List<Embedding> getAllData() {
         return idToEmbeddingData.values().stream().collect(Collectors.toList());
-    }
-
-    private static final EmbeddingStoreJsonCodec CODEC = loadCodec();
-
-    private static EmbeddingStoreJsonCodec loadCodec() {
-        Collection<EmbeddingStoreJsonCodecFactory> factories = ServiceHelper.loadFactories(
-                EmbeddingStoreJsonCodecFactory.class);
-        for (EmbeddingStoreJsonCodecFactory factory : factories) {
-            return factory.create();
-        }
-        return new GsonInMemoryEmbeddingStoreJsonCodec();
-    }
-
-    public static EmbeddingMemoryStore<Embedding> fromJson(String json) {
-        return CODEC.fromJson(json);
-    }
-
-    public static EmbeddingMemoryStore<Embedding> fromFile(Path filePath) {
-        try {
-            String json = new String(Files.readAllBytes(filePath));
-            return fromJson(json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void serializeToFile(Path filePath) {

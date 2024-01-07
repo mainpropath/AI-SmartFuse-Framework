@@ -5,7 +5,6 @@ import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
 import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,6 +20,18 @@ import java.util.List;
 public class EmbeddingMemoryTest {
 
     private OpenaiEmbeddingMemoryStore embeddingMemoryStore;
+
+    public static Path toPath(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try {
+                return Paths.get(file.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     @Before
     public void test_ingest() {
@@ -56,18 +67,6 @@ public class EmbeddingMemoryTest {
         String filePath = "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\EmbeddingMemoryStoreTest.txt";
         EmbeddingMemoryStore<Embedding> embeddingEmbeddingMemoryStore = OpenaiEmbeddingMemoryStore.fromFile(toPath(filePath));
         System.out.println(embeddingEmbeddingMemoryStore.getAllData());
-    }
-
-    public static Path toPath(String fileName) {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try {
-                return Paths.get(file.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
 }
