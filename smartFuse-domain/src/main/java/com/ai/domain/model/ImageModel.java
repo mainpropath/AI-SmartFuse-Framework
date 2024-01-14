@@ -1,7 +1,7 @@
 package com.ai.domain.model;
 
 
-import com.ai.common.usage.AiResponse;
+import com.ai.common.resp.AiResponse;
 import com.ai.domain.data.images.Image;
 
 public interface ImageModel {

@@ -3,27 +3,29 @@ package com.ai.openai.parameter;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.openai.parameter.input.OpenaiEmbeddingParameter;
 
+import static com.ai.common.util.ValidationUtils.ensureNotNull;
+
 
 public class OpenaiEmbeddingModelParameter implements Parameter<OpenaiEmbeddingParameter> {
 
-    private OpenaiEmbeddingParameter param;
+    private OpenaiEmbeddingParameter parameter;
 
     public OpenaiEmbeddingModelParameter() {
         this(OpenaiEmbeddingParameter.builder().build());
     }
 
-    public OpenaiEmbeddingModelParameter(OpenaiEmbeddingParameter param) {
-        this.param = param;
+    public OpenaiEmbeddingModelParameter(OpenaiEmbeddingParameter parameter) {
+        this.parameter = ensureNotNull(parameter, "OpenaiEmbeddingParameter");
     }
 
     @Override
     public OpenaiEmbeddingParameter getParameter() {
-        return param;
+        return parameter;
     }
 
     @Override
     public void SetParameter(OpenaiEmbeddingParameter parameter) {
-        this.param = param;
+        this.parameter = parameter;
     }
 
 }

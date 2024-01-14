@@ -1,8 +1,8 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.common.usage.AiResponse;
-import com.ai.common.usage.TokenUsage;
+import com.ai.common.resp.AiResponse;
+import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.images.Image;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.ImageModel;
@@ -39,16 +39,16 @@ public class OpenaiImageModel implements ImageModel {
     @Override
     public AiResponse<Image> create(String message) {
         ensureNotBlank(message, "message");
-        CreateImageRequest request = createRequestParameter(message);
-        List<ImageObject> imageObjects = OpenAiClient.getAggregationSession()
+        List<ImageObject> imageObjects = OpenAiClient
+                .getAggregationSession()
                 .getImageSession()
-                .createImageCompletions(NULL, NULL, NULL, request);
+                .createImageCompletions(NULL, NULL, NULL, createRequestParameter(message));
         return createAiResponse(imageObjects);
     }
 
     private AiResponse<Image> createAiResponse(List<ImageObject> imageObjects) {
         Image image = ImageObj2Image(imageObjects.get(0));
-        return new AiResponse<>(image, new TokenUsage(), "");
+        return new AiResponse<>(image, null, FinishReason.SUCCESS);
     }
 
     private CreateImageRequest createRequestParameter(String message) {

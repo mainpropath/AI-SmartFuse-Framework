@@ -1,8 +1,9 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.common.usage.AiResponse;
-import com.ai.common.usage.TokenUsage;
+import com.ai.common.resp.AiResponse;
+import com.ai.common.resp.finish.FinishReason;
+import com.ai.common.resp.usage.TokenUsage;
 import com.ai.domain.data.message.AssistantMessage;
 import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.data.parameter.Parameter;
@@ -45,12 +46,11 @@ public class OpenaiChatModel implements ChatModel {
         ensureNotEmpty(messages, "messages");
         // 转换历史消息
         List<DefaultMessage> defaultMessages = chatMessageList2DefaultMessageList(messages);
-        // 构造请求参数
-        DefaultChatCompletionRequest request = createRequestParameter(defaultMessages);
         // 发送请求获取结果
-        ChatCompletionResponse response = OpenAiClient.getAggregationSession()
+        ChatCompletionResponse response = OpenAiClient
+                .getAggregationSession()
                 .getChatSession()
-                .chatCompletions(NULL, NULL, NULL, request);
+                .chatCompletions(NULL, NULL, NULL, createRequestParameter(defaultMessages));
         return createAiResponse(response);
     }
 
@@ -60,7 +60,7 @@ public class OpenaiChatModel implements ChatModel {
         AssistantMessage assistantMessage = new AssistantMessage(choices.get(choices.size() - 1).getMessage().getContent());
         // 构造token使用情况
         TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
-        return new AiResponse<>(assistantMessage, tokenUsage, response.getFinishReason());
+        return new AiResponse<>(assistantMessage, tokenUsage, FinishReason.SUCCESS);
     }
 
     private List<DefaultMessage> chatMessageList2DefaultMessageList(List<ChatMessage> chatMessages) {

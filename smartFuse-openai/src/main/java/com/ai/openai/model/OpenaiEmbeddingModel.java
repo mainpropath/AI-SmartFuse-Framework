@@ -1,8 +1,9 @@
 package com.ai.openai.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ai.common.usage.AiResponse;
-import com.ai.common.usage.TokenUsage;
+import com.ai.common.resp.AiResponse;
+import com.ai.common.resp.finish.FinishReason;
+import com.ai.common.resp.usage.TokenUsage;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.document.TextSegment;
@@ -41,16 +42,16 @@ public class OpenaiEmbeddingModel implements EmbeddingModel {
         EmbeddingCompletionResponse response = OpenAiClient.getAggregationSession().getEmbeddingSession().embeddingCompletions(NULL, NULL, NULL, text);
         Embedding embedding = embeddingObj2Embedding(response.getData().get(0));
         TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
-        return new AiResponse<>(embedding, tokenUsage, "");
+        return new AiResponse<>(embedding, tokenUsage, FinishReason.SUCCESS);
     }
 
     public AiResponse<List<Embedding>> embed(List<String> stringList) {
         ensureNotEmpty(stringList, "stringList");
-        // 构造请求参数
-        EmbeddingCompletionRequest request = createRequestParameter(stringList);
         // 发起请求
-        EmbeddingCompletionResponse embeddingCompletionResponse =
-                OpenAiClient.getAggregationSession().getEmbeddingSession().embeddingCompletions(NULL, NULL, NULL, request);
+        EmbeddingCompletionResponse embeddingCompletionResponse = OpenAiClient
+                .getAggregationSession()
+                .getEmbeddingSession()
+                .embeddingCompletions(NULL, NULL, NULL, createRequestParameter(stringList));
         return createAiResponse(embeddingCompletionResponse);
     }
 
@@ -69,7 +70,7 @@ public class OpenaiEmbeddingModel implements EmbeddingModel {
     private AiResponse<List<Embedding>> createAiResponse(EmbeddingCompletionResponse response) {
         List<Embedding> embeddings = embeddingObjList2embeddingList(response.getData());
         TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
-        return new AiResponse<>(embeddings, tokenUsage, "");
+        return new AiResponse<>(embeddings, tokenUsage, FinishReason.SUCCESS);
     }
 
     private EmbeddingCompletionRequest createRequestParameter(List<String> stringList) {

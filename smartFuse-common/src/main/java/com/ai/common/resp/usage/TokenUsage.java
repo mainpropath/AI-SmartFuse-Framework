@@ -1,4 +1,4 @@
-package com.ai.common.usage;
+package com.ai.common.resp.usage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

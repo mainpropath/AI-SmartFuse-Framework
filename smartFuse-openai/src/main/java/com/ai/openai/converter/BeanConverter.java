@@ -1,6 +1,6 @@
 package com.ai.openai.converter;
 
-import com.ai.common.usage.TokenUsage;
+import com.ai.common.resp.usage.TokenUsage;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.data.images.Image;
 import com.ai.openAi.common.Usage;

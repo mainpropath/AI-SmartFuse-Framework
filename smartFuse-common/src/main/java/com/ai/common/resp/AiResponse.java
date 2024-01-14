@@ -1,6 +1,8 @@
-package com.ai.common.usage;
+package com.ai.common.resp;
 
 
+import com.ai.common.resp.finish.FinishReason;
+import com.ai.common.resp.usage.TokenUsage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,6 @@ public class AiResponse<T> {
 
     private T data;
     private TokenUsage tokenUsage;
-    private String finishReason;
+    private FinishReason finishReason;
 
 }
