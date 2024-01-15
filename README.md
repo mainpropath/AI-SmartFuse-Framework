@@ -7,7 +7,7 @@
 
 ## **项目背景**
 
-![star-history-2024115](/doc/img/star-history-2024115.png)
+![star-history-2024115](doc/img/star-history-2024115.png)
 
 本项目使用到了java版本的大模型SDK，仓库路径：[AI-java](https://github.com/mainpropath/AI-java)
 
@@ -27,7 +27,7 @@
 
 将项目下载到本地后install。
 
-![image-20231205204603312](/doc/img/image-20231205204603312.png)
+![image-20231205204603312](doc/img/image-20231205204603312.png)
 
 ## [**目前主要功能**](#目前主要功能)
 
