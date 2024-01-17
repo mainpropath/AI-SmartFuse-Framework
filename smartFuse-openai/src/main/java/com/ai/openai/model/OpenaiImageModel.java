@@ -6,18 +6,18 @@ import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.images.Image;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.ImageModel;
-import com.ai.openAi.endPoint.images.ImageObject;
-import com.ai.openAi.endPoint.images.req.CreateImageRequest;
 import com.ai.openai.client.OpenAiClient;
+import com.ai.openai.endPoint.images.ImageObject;
+import com.ai.openai.endPoint.images.req.CreateImageRequest;
 import com.ai.openai.parameter.OpenaiImageModelParameter;
 import com.ai.openai.parameter.input.OpenaiImageParameter;
 import lombok.Data;
 
 import java.util.List;
 
+import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
-import static com.ai.openAi.common.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.ImageObj2Image;
 
 /**

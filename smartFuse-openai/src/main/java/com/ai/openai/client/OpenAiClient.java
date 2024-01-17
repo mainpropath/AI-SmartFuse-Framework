@@ -1,10 +1,11 @@
 package com.ai.openai.client;
 
-import com.ai.openAi.achieve.Configuration;
-import com.ai.openAi.achieve.defaults.DefaultOpenAiSessionFactory;
-import com.ai.openAi.achieve.defaults.strategy.FirstKeyStrategy;
-import com.ai.openAi.achieve.standard.OpenAiSessionFactory;
-import com.ai.openAi.achieve.standard.interfaceSession.AggregationSession;
+
+import com.ai.common.strategy.impl.FirstKeyStrategy;
+import com.ai.openai.achieve.Configuration;
+import com.ai.openai.achieve.defaults.DefaultOpenAiSessionFactory;
+import com.ai.openai.achieve.standard.OpenAiSessionFactory;
+import com.ai.openai.achieve.standard.interfaceSession.AggregationSession;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -25,7 +26,8 @@ public class OpenAiClient {
                     Configuration configuration = new Configuration();
                     configuration.setApiHost("https://api.openai.com");
 //                    configuration.setKeyList(Arrays.asList("填入你的API Key"));
-                    configuration.setKeyStrategy(new FirstKeyStrategy());
+                    configuration.setKeyList(Arrays.asList("**************************"));
+                    configuration.setKeyStrategy(new FirstKeyStrategy<String>());
                     configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
                     OpenAiSessionFactory factory = new DefaultOpenAiSessionFactory(configuration);
                     aggregationSession = factory.openAggregationSession();

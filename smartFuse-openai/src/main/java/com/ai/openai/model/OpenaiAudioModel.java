@@ -6,10 +6,10 @@ import com.ai.common.resp.AiResponse;
 import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.AudioModel;
-import com.ai.openAi.endPoint.audio.req.SttCompletionRequest;
-import com.ai.openAi.endPoint.audio.req.TtsCompletionRequest;
-import com.ai.openAi.endPoint.audio.resp.SttCompletionResponse;
 import com.ai.openai.client.OpenAiClient;
+import com.ai.openai.endPoint.audio.req.SttCompletionRequest;
+import com.ai.openai.endPoint.audio.req.TtsCompletionRequest;
+import com.ai.openai.endPoint.audio.resp.SttCompletionResponse;
 import com.ai.openai.parameter.OpenaiAudioModelSttParameter;
 import com.ai.openai.parameter.OpenaiAudioModelTtsParameter;
 import com.ai.openai.parameter.input.OpenaiAudioSttParameter;
@@ -20,8 +20,8 @@ import retrofit2.Callback;
 
 import java.io.File;
 
+import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
-import static com.ai.openAi.common.Constants.NULL;
 
 /**
  * openai语音模型

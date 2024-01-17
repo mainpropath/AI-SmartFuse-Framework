@@ -3,9 +3,9 @@ package com.ai.openai.converter;
 import com.ai.common.resp.usage.TokenUsage;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.data.images.Image;
-import com.ai.openAi.common.Usage;
-import com.ai.openAi.endPoint.embeddings.EmbeddingObject;
-import com.ai.openAi.endPoint.images.ImageObject;
+import com.ai.openai.common.Usage;
+import com.ai.openai.endPoint.embeddings.EmbeddingObject;
+import com.ai.openai.endPoint.images.ImageObject;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,6 @@
 package com.ai.openai.parameter.input;
 
-import com.ai.openAi.endPoint.chat.ResponseFormat;
-import com.ai.openAi.endPoint.chat.req.BaseChatCompletionRequest;
+import com.ai.openai.endPoint.chat.ResponseFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,7 +22,7 @@ public class OpenaiChatParameter implements Serializable {
      * 要使用的模型的 ID
      */
     @Builder.Default
-    private String model = BaseChatCompletionRequest.Model.GPT_3_5_TURBO.getModuleName();
+    private String model = OpenaiChatParameter.Model.GPT_3_5_TURBO.getModuleName();
 
     /**
      * 介于 -2.0 和 2.0 之间的数字，默认值为 0

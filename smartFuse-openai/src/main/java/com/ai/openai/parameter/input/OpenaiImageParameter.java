@@ -1,6 +1,5 @@
 package com.ai.openai.parameter.input;
 
-import com.ai.openAi.endPoint.images.req.CreateImageRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +21,7 @@ public class OpenaiImageParameter implements Serializable {
      * 默认为 dall-e-2
      */
     @Builder.Default
-    private String model = CreateImageRequest.Model.DALL_E_3.getName();
+    private String model = OpenaiImageParameter.Model.DALL_E_3.getName();
 
     /**
      * 要生成的图像数。必须介于 1 和 10 之间，dall-e-3只能为1。
@@ -31,8 +30,6 @@ public class OpenaiImageParameter implements Serializable {
 
     /**
      * 将生成的图像的质量。 创建具有更精细细节和更高一致性的图像。
-     *
-     * @see CreateImageRequest.Quality
      */
     private String quality;
 
@@ -53,8 +50,6 @@ public class OpenaiImageParameter implements Serializable {
      * 生成的图像的样式。
      * 此参数仅仅dall-e-3,取值范围：vivid、natural
      * 默认值：vivid
-     *
-     * @see CreateImageRequest.Style
      */
     private String style;
 

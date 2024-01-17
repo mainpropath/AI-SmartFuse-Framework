@@ -1,6 +1,5 @@
 package com.ai.openai.parameter.input;
 
-import com.ai.openAi.endPoint.embeddings.req.EmbeddingCompletionRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +19,7 @@ public class OpenaiEmbeddingParameter implements Serializable {
      * 要使用的模型的 ID。
      */
     @Builder.Default
-    private String model = EmbeddingCompletionRequest.Model.TEXT_EMBEDDING_ADA_002.getModelName();
+    private String model = OpenaiEmbeddingParameter.Model.TEXT_EMBEDDING_ADA_002.getModelName();
 
     /**
      * 要返回嵌入的格式。

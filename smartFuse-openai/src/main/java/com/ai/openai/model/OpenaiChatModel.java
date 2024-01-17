@@ -8,11 +8,11 @@ import com.ai.domain.data.message.AssistantMessage;
 import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.ChatModel;
-import com.ai.openAi.endPoint.chat.ChatChoice;
-import com.ai.openAi.endPoint.chat.msg.DefaultMessage;
-import com.ai.openAi.endPoint.chat.req.DefaultChatCompletionRequest;
-import com.ai.openAi.endPoint.chat.resp.ChatCompletionResponse;
 import com.ai.openai.client.OpenAiClient;
+import com.ai.openai.endPoint.chat.ChatChoice;
+import com.ai.openai.endPoint.chat.msg.DefaultMessage;
+import com.ai.openai.endPoint.chat.req.DefaultChatCompletionRequest;
+import com.ai.openai.endPoint.chat.resp.ChatCompletionResponse;
 import com.ai.openai.parameter.OpenaiChatModelParameter;
 import com.ai.openai.parameter.input.OpenaiChatParameter;
 import lombok.Data;
@@ -20,9 +20,9 @@ import lombok.Data;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
-import static com.ai.openAi.common.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.usage2tokenUsage;
 
 /**

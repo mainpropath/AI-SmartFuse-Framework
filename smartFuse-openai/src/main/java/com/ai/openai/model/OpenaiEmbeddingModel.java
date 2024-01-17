@@ -8,17 +8,17 @@ import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.document.TextSegment;
 import com.ai.domain.model.EmbeddingModel;
-import com.ai.openAi.endPoint.embeddings.req.EmbeddingCompletionRequest;
-import com.ai.openAi.endPoint.embeddings.resp.EmbeddingCompletionResponse;
 import com.ai.openai.client.OpenAiClient;
+import com.ai.openai.endPoint.embeddings.req.EmbeddingCompletionRequest;
+import com.ai.openai.endPoint.embeddings.resp.EmbeddingCompletionResponse;
 import com.ai.openai.parameter.OpenaiEmbeddingModelParameter;
 import com.ai.openai.parameter.input.OpenaiEmbeddingParameter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.*;
-import static com.ai.openAi.common.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.*;
 
 /**

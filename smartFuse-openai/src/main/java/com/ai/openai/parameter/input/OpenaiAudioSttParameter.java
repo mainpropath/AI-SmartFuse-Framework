@@ -1,6 +1,5 @@
 package com.ai.openai.parameter.input;
 
-import com.ai.openAi.endPoint.audio.req.SttCompletionRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,7 +28,7 @@ public class OpenaiAudioSttParameter {
      */
     @NonNull
     @Builder.Default
-    private String model = SttCompletionRequest.Model.whisper_1.getModuleName();
+    private String model = OpenaiAudioSttParameter.Model.whisper_1.getModuleName();
 
     /**
      * 音频的语言，以 ISO-639-1 格式提供输入语言将提高准确性和延迟。

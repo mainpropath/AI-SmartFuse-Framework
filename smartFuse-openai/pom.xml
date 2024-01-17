@@ -38,8 +38,8 @@
         </dependency>
         <dependency>
             <groupId>com.ai</groupId>
-            <artifactId>AI-java</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>ai-openai</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
