@@ -1,16 +1,22 @@
 package com.ai.openai.memory.embedding;
 
+import com.ai.common.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
 import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
+import com.ai.openai.achieve.Configuration;
+import com.ai.openai.client.OpenAiClient;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,6 +41,13 @@ public class EmbeddingMemoryTest {
 
     @Before
     public void test_ingest() {
+        // 设置配置信息
+        Configuration configuration = new Configuration();
+        configuration.setApiHost("https://api.openai.com");
+        configuration.setKeyList(Arrays.asList("************************"));
+        configuration.setKeyStrategy(new FirstKeyStrategy<String>());
+        configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
+        OpenAiClient.SetConfiguration(configuration);
         // 测试文件路径
         String[] filePath = {"D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-中文.txt",
                 "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-英文.txt"};

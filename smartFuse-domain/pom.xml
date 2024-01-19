@@ -73,18 +73,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- 让maven不编译xls文件，但仍将其打包 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>xls</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

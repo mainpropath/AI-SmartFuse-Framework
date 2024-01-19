@@ -1,9 +1,12 @@
 package com.ai.openai.chain;
 
 
+import com.ai.common.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.chain.impl.ConversationalRetrievalChain;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
+import com.ai.openai.achieve.Configuration;
+import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
 import com.ai.openai.memory.embedding.OpenaiEmbeddingStoreIngestor;
 import com.ai.openai.memory.embedding.OpenaiEmbeddingStoreRetriever;
@@ -12,7 +15,10 @@ import com.ai.openai.model.OpenaiEmbeddingModel;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.ai.openai.memory.embedding.EmbeddingMemoryTest.toPath;
@@ -23,6 +29,13 @@ public class ConversationalRetrievalChainTest {
 
     @Before
     public void before() {
+        // 设置配置信息
+        Configuration configuration = new Configuration();
+        configuration.setApiHost("https://api.openai.com");
+        configuration.setKeyList(Arrays.asList("************************"));
+        configuration.setKeyStrategy(new FirstKeyStrategy<String>());
+        configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
+        OpenAiClient.SetConfiguration(configuration);
         // 测试文件路径
         String[] filePath = {"D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-中文.txt",
                 "D:\\chatGPT-api\\AI-SmartFuse-Framework\\doc\\test\\document\\ConversationalRetrievalChainTest-英文.txt"};
