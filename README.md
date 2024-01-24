@@ -7,9 +7,9 @@
 
 ## **项目背景**
 
-![star-history-2024115](doc/img/star-history-2024115.png)
+![star-history-2024115](doc/img/star-history-2024124.png)
 
-本项目使用到了java版本的大模型SDK，仓库路径：[AI-java](https://github.com/mainpropath/AI-java)
+**本项目使用到了java版本的大模型SDK，仓库路径：[AI-java](https://github.com/mainpropath/AI-java)**
 
 随着深度学习和人工智能的迅速发展，各个厂商纷纷推出了强大的大模型，这些大模型在语言生成、图像识别、自然语言处理等领域取得了巨大的成功。然而，不同厂商之间的大模型往往采用不同的架构和接口，使得开发者在应用这些模型时面临一些挑战。
 
@@ -25,9 +25,7 @@
 
 ## **安装**
 
-将项目下载到本地后install。
-
-![image-20231205204603312](doc/img/image-20231205204603312.png)
+将项目下载到本地后install后，将引入pom文件当中。
 
 ## [**目前主要功能**](#目前主要功能)
 
