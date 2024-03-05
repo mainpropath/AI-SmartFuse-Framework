@@ -12,6 +12,8 @@
         <module>smartFuse-domain</module>
         <module>smartFuse-common</module>
         <module>smartFuse-openai</module>
+        <module>smartFuse-spark</module>
+        <module>smartFuse-baidu</module>
     </modules>
 
     <properties>
