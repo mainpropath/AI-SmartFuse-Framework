@@ -1,7 +1,7 @@
 package com.ai.openai.chain;
 
 
-import com.ai.common.strategy.impl.FirstKeyStrategy;
+import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.chain.impl.ConversationalRetrievalChain;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
