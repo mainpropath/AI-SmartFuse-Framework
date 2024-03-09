@@ -20,9 +20,9 @@ import lombok.Data;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
+import static com.ai.core.exception.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.usage2tokenUsage;
 
 /**

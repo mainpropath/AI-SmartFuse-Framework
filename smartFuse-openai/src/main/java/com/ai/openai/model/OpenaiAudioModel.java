@@ -20,8 +20,8 @@ import retrofit2.Callback;
 
 import java.io.File;
 
-import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
+import static com.ai.core.exception.Constants.NULL;
 
 /**
  * openai语音模型

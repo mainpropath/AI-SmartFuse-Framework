@@ -15,9 +15,9 @@ import lombok.Data;
 
 import java.util.List;
 
-import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
+import static com.ai.core.exception.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.ImageObj2Image;
 
 /**
@@ -52,7 +52,7 @@ public class OpenaiImageModel implements ImageModel {
     }
 
     private CreateImageRequest createRequestParameter(String message) {
-        CreateImageRequest request = CreateImageRequest.BuildBaseCreateImageRequest(message);
+        CreateImageRequest request = CreateImageRequest.baseBuild(message);
         BeanUtil.copyProperties(parameter.getParameter(), request);
         return request;
     }

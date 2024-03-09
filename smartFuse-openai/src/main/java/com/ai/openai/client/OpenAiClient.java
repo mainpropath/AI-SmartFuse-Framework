@@ -3,7 +3,7 @@ package com.ai.openai.client;
 
 import com.ai.openai.achieve.Configuration;
 import com.ai.openai.achieve.defaults.DefaultOpenAiSessionFactory;
-import com.ai.openai.achieve.standard.interfaceSession.AggregationSession;
+import com.ai.openai.achieve.standard.session.AggregationSession;
 
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
 

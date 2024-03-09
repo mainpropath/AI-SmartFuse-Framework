@@ -17,8 +17,8 @@ import com.ai.openai.parameter.input.OpenaiEmbeddingParameter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ai.common.exception.Constants.NULL;
 import static com.ai.common.util.ValidationUtils.*;
+import static com.ai.core.exception.Constants.NULL;
 import static com.ai.openai.converter.BeanConverter.*;
 
 /**
@@ -74,7 +74,7 @@ public class OpenaiEmbeddingModel implements EmbeddingModel {
     }
 
     private EmbeddingCompletionRequest createRequestParameter(List<String> stringList) {
-        EmbeddingCompletionRequest request = EmbeddingCompletionRequest.BuildBaseEmbeddingCompletionRequest(stringList);
+        EmbeddingCompletionRequest request = EmbeddingCompletionRequest.baseBuild(stringList);
         BeanUtil.copyProperties(parameter.getParameter(), request);
         return request;
     }

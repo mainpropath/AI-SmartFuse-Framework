@@ -1,6 +1,6 @@
 package com.ai.openai.chain;
 
-import com.ai.common.strategy.impl.FirstKeyStrategy;
+import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.chain.impl.ConversationalChain;
 import com.ai.openai.achieve.Configuration;
 import com.ai.openai.client.OpenAiClient;

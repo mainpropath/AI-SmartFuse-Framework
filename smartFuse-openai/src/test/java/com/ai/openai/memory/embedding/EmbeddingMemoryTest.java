@@ -1,6 +1,6 @@
 package com.ai.openai.memory.embedding;
 
-import com.ai.common.strategy.impl.FirstKeyStrategy;
+import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.document.Document;
 import com.ai.domain.document.FileSystemDocumentLoader;
