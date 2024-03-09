@@ -20,7 +20,7 @@ public class OpenaiAudioModelTtsParameter implements Parameter<OpenaiAudioTtsPar
 
     @Override
     public OpenaiAudioTtsParameter getParameter() {
-        return parameter;
+        return this.parameter;
     }
 
 

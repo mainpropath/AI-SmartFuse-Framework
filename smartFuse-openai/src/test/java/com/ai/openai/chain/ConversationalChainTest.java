@@ -46,4 +46,9 @@ public class ConversationalChainTest {
         System.out.println(res2);// 你的名字是小明。
     }
 
+    interface Chat {
+
+        String chat(String text);
+    }
+
 }

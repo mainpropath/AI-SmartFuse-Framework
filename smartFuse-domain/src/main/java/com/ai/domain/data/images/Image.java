@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Image {
 
-    private String url;
+    private String urlOrB64Json;
 
 }

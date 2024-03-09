@@ -19,7 +19,7 @@ public class OpenaiImageModelParameter implements Parameter<OpenaiImageParameter
 
     @Override
     public OpenaiImageParameter getParameter() {
-        return parameter;
+        return this.parameter;
     }
 
     @Override
