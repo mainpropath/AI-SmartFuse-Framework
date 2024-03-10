@@ -23,6 +23,10 @@ public class SimplePromptTemplate implements PromptTemplate {
         this.promptName = ensureNotBlank(promptName, "promptName");
     }
 
+    public static String render(String prompt, Map<String, String> keys) {
+        return PlaceHolderReplaceUtils.replaceWithMap(prompt, keys);
+    }
+
     @Override
     public SimplePrompt apply(Map<String, String> keys) {
         return new SimplePrompt(PlaceHolderReplaceUtils.replaceWithMap(template, keys), new SimplePromptTemplate(this.template, this.promptName));

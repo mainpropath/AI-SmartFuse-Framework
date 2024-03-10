@@ -1,22 +1,22 @@
 package com.ai.domain.service;
 
 import com.ai.domain.memory.chat.ChatHistoryRecorder;
-import com.ai.domain.memory.chat.ChatMemoryStore;
 import com.ai.domain.model.ChatModel;
+import com.ai.domain.model.ModerationModel;
 import com.ai.domain.tools.ToolSpecification;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
+@Builder
 public class AiServiceContext {
 
-    public final Class<?> aiServiceClass;
-    public ChatModel chatModel;
-    public ChatMemoryStore chatMemoryStore;
-    public ChatHistoryRecorder chatHistoryRecorder;
-    public List<ToolSpecification> toolSpecifications;
-
-    public AiServiceContext(Class<?> aiServiceClass) {
-        this.aiServiceClass = aiServiceClass;
-    }
+    private Class<?> aiServiceClass;
+    private ChatModel chatModel;
+    private ModerationModel moderationModel;
+    private ChatHistoryRecorder chatHistoryRecorder;
+    private List<ToolSpecification> toolSpecifications;
 
 }

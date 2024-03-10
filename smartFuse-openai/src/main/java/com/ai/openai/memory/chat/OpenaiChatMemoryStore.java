@@ -15,17 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor
 public class OpenaiChatMemoryStore implements ChatMemoryStore {
 
-    private final Map<Object, List<ChatMessage>> messagesByMemoryId = new ConcurrentHashMap<>();
+    private final Map<String, List<ChatMessage>> messagesByMemoryId = new ConcurrentHashMap<>();
 
-    public List<ChatMessage> getMessages(Object memoryId) {
+    public List<ChatMessage> getMessages(String memoryId) {
         return this.messagesByMemoryId.computeIfAbsent(memoryId, (ignored) -> new ArrayList());
     }
 
-    public void updateMessages(Object memoryId, List<ChatMessage> messages) {
+    public void updateMessages(String memoryId, List<ChatMessage> messages) {
         this.messagesByMemoryId.put(memoryId, messages);
     }
 
-    public void deleteMessages(Object memoryId) {
+    public void deleteMessages(String memoryId) {
         this.messagesByMemoryId.remove(memoryId);
     }
 

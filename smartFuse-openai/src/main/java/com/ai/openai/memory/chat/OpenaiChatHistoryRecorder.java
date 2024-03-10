@@ -5,6 +5,7 @@ import com.ai.domain.data.message.SystemMessage;
 import com.ai.domain.memory.chat.ChatHistoryRecorder;
 import com.ai.domain.memory.chat.ChatMemoryStore;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,25 +16,43 @@ import static com.ai.common.util.Utils.randomUUID;
 /**
  * Openai历史信息记录器
  */
+@Data
 @Builder
 public class OpenaiChatHistoryRecorder implements ChatHistoryRecorder {
 
     @Builder.Default
-    private final String id = randomUUID();
+    private String id = randomUUID();
     @Builder.Default
-    private final Integer maxMessageNumber = 30;
+    private Integer maxMessageNumber = 100;
     @Builder.Default
-    private final ChatMemoryStore memoryStore = new OpenaiChatMemoryStore();
+    private ChatMemoryStore memoryStore = new OpenaiChatMemoryStore();
+
+    public OpenaiChatHistoryRecorder() {
+        this(randomUUID(), 30, new OpenaiChatMemoryStore());
+    }
+
+    public OpenaiChatHistoryRecorder(String id, Integer maxMessageNumber, ChatMemoryStore memoryStore) {
+        this.id = id;
+        this.maxMessageNumber = maxMessageNumber;
+        this.memoryStore = memoryStore;
+    }
 
     @Override
-    public String id() {
+    public String getId() {
         return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
     public void add(ChatMessage message) {
         List<ChatMessage> messages = this.getCurrentMessages();
+        // 如果添加的是系统消息
         if (message instanceof SystemMessage) {
+            // 先判断是否有相同的系统消息
             Optional<SystemMessage> systemMessage = findSystemMessage(messages);
             if (systemMessage.isPresent()) {
                 if (systemMessage.get().equals(message)) {
@@ -47,6 +66,9 @@ public class OpenaiChatHistoryRecorder implements ChatHistoryRecorder {
         memoryStore.updateMessages(this.id, messages);
     }
 
+    /**
+     * 查找到对应的系统消息
+     */
     private Optional<SystemMessage> findSystemMessage(List<ChatMessage> messages) {
         return messages.stream()
                 .filter((message) -> message instanceof SystemMessage)
@@ -66,14 +88,24 @@ public class OpenaiChatHistoryRecorder implements ChatHistoryRecorder {
 
     @Override
     public List<ChatMessage> getCurrentMessages() {
-        List<ChatMessage> messages = new ArrayList(this.memoryStore.getMessages(this.id));
+        return getMessagesById(this.id);
+    }
+
+    @Override
+    public List<ChatMessage> getMessagesById(String id) {
+        List<ChatMessage> messages = new ArrayList(this.memoryStore.getMessages(id));
         updatePolicy(messages);
         return messages;
     }
 
     @Override
+    public void clearById(String id) {
+        this.memoryStore.deleteMessages(id);
+    }
+
+    @Override
     public void clear() {
-        this.memoryStore.deleteMessages(this.id);
+        this.clearById(this.id);
     }
 
 }
