@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Moderation {
 
-    private boolean flagged;
+    private Boolean flagged;
     private String flaggedText;
     private String type;
 

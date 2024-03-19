@@ -12,11 +12,9 @@ import java.util.List;
 @Data
 @Builder
 public class AiServiceContext {
-
     private Class<?> aiServiceClass;
     private ChatModel chatModel;
     private ModerationModel moderationModel;
     private ChatHistoryRecorder chatHistoryRecorder;
     private List<ToolSpecification> toolSpecifications;
-
 }

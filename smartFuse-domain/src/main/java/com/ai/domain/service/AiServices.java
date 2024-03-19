@@ -2,6 +2,7 @@ package com.ai.domain.service;
 
 import com.ai.domain.memory.chat.ChatHistoryRecorder;
 import com.ai.domain.model.ChatModel;
+import com.ai.domain.model.ModerationModel;
 import com.ai.domain.spi.AiServicesFactory;
 import com.ai.domain.spi.ServiceHelper;
 
@@ -25,13 +26,18 @@ public abstract class AiServices<T> {
         return new DefaultAiServices<>(context);
     }
 
-    public AiServices<T> chatLanguageModel(ChatModel chatModel) {
+    public AiServices<T> chat(ChatModel chatModel) {
         context.setChatModel(chatModel);
         return this;
     }
 
-    public AiServices<T> chatHistoryRecorder(ChatHistoryRecorder chatHistoryRecorder) {
+    public AiServices<T> memory(ChatHistoryRecorder chatHistoryRecorder) {
         context.setChatHistoryRecorder(chatHistoryRecorder);
+        return this;
+    }
+
+    public AiServices<T> moderate(ModerationModel moderationModel) {
+        context.setModerationModel(moderationModel);
         return this;
     }
 

@@ -7,6 +7,9 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * 通过此注解来标识用户信息
+ */
 @Retention(RUNTIME)
 @Target({METHOD, PARAMETER})
 public @interface UserMessage {

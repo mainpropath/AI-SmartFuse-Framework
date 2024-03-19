@@ -5,6 +5,8 @@ import com.ai.common.resp.AiResponse;
 import com.ai.common.resp.finish.FinishReason;
 import com.ai.common.util.Exceptions;
 import com.ai.domain.data.message.AssistantMessage;
+import com.ai.domain.data.message.ChatMessage;
+import com.ai.domain.data.moderation.Moderation;
 import com.ai.domain.memory.chat.ChatHistoryRecorder;
 import com.ai.domain.model.ChatModel;
 import com.ai.domain.model.ModerationModel;
@@ -12,8 +14,13 @@ import com.ai.domain.prompt.impl.SimplePromptTemplate;
 import com.ai.domain.service.annotation.*;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 class DefaultAiServices<T> extends AiServices<T> {
 
@@ -24,7 +31,7 @@ class DefaultAiServices<T> extends AiServices<T> {
     /**
      * 检查@Prompt注解
      */
-    public static String analyzePromptAnnotation(Class<?> clazz, Object arg) {
+    public static String prompt(Class<?> clazz, Object arg) {
         com.ai.domain.service.annotation.Prompt prompt = clazz.getAnnotation(com.ai.domain.service.annotation.Prompt.class);
         if (prompt != null) {
             Map<String, String> map = new HashMap<>();
@@ -59,67 +66,37 @@ class DefaultAiServices<T> extends AiServices<T> {
         return variables;
     }
 
-    public void analyzeMemoryIdAnnotation(Parameter[] parameters, Class<?>[] parameterTypes, Object[] args) {
+    public static void verifyModerationIfNeeded(Future<Moderation> moderationFuture) {
+        if (moderationFuture != null) {
+            try {
+                Moderation moderation = moderationFuture.get();
+                if (moderation.getFlagged()) {
+                    throw Exceptions.runtime(String.format("Text \"%s\" violates content policy", moderation.getFlaggedText()));
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * 解析@MemoryId注解，只有第一个@MemoryId注解才会生效
+     */
+    public String memoryId(Parameter[] parameters, Class<?>[] parameterTypes, Object[] args) {
         for (int i = 0; i < parameterTypes.length; i++) {
-            if (parameters[i].isAnnotationPresent(MemoryId.class) && String.class.isAssignableFrom(parameterTypes[i])) {
-                context.getChatHistoryRecorder().setId((String) args[i]);
-                return;
-            }
-        }
-    }
-
-    /**
-     * 检查@Memory注解
-     *
-     * @param method 对应的方法
-     */
-    public void analyzeMemoryAnnotation(Method method) throws Exception {
-        if (context.getChatHistoryRecorder() != null) {
-            return;
-        }
-        Memory memory = method.getAnnotation(Memory.class);
-        if (memory != null) {
-            boolean flag = false;
-            Class<?> recorder = memory.value();
-            // 判断注解设置的对象是否实现了ChatHistoryRecorder接口
-            for (Class<?> intf : recorder.getInterfaces()) {
-                if (intf.equals(ChatHistoryRecorder.class)) {
-                    flag = true;
-                    break;
+            if (parameters[i].isAnnotationPresent(MemoryId.class)
+                    && (String.class.isAssignableFrom(parameterTypes[i])
+                    || Integer.class.isAssignableFrom(parameterTypes[i])
+                    || Long.class.isAssignableFrom(parameterTypes[i])
+                    || int.class.isAssignableFrom(parameterTypes[i])
+                    || long.class.isAssignableFrom(parameterTypes[i]))) {
+                synchronized (context.getChatHistoryRecorder()) {
+                    context.getChatHistoryRecorder().setId(String.valueOf(args[i]));
+                    return String.valueOf(args[i]);
                 }
             }
-            // 如果未实现，抛出异常
-            if (!flag)
-                throw new RuntimeException("The passed in parameter does not implement the ChatHistoryRecorder interface");
-            context.setChatHistoryRecorder((ChatHistoryRecorder) recorder.getDeclaredConstructor().newInstance());
         }
-    }
-
-    /**
-     * 检查@Moderate注解
-     *
-     * @param method 对应的方法
-     */
-    public void analyzeModerateAnnotation(Method method) throws Exception {
-        if (context.getModerationModel() != null) {
-            return;
-        }
-        Moderate moderate = method.getAnnotation(Moderate.class);
-        if (moderate != null) {
-            boolean flag = false;
-            Class<?> moderation = moderate.value();
-            for (Class<?> intf : moderation.getInterfaces()) {
-                if (intf.equals(ModerationModel.class)) {
-                    flag = true;
-                    break;
-                }
-            }
-            // 如果未实现，抛出异常
-            if (!flag)
-                throw new RuntimeException("The passed in parameter does not implement the ModerationModel interface");
-            context.setModerationModel((ModerationModel) moderation.getDeclaredConstructor().newInstance());
-        }
-
+        return null;
     }
 
     /**
@@ -130,7 +107,7 @@ class DefaultAiServices<T> extends AiServices<T> {
      * @param args       参数值
      * @return
      */
-    public com.ai.domain.data.message.SystemMessage analyzeSystemMessageAnnotation(Method method, Parameter[] parameters, Object[] args) {
+    public com.ai.domain.data.message.SystemMessage systemMessage(Method method, Parameter[] parameters, Object[] args) {
         // 解析方法参数当中被@V修饰的参数
         Map<String, String> variables = getPromptTemplateVariables(args, parameters);
         SystemMessage annotation = method.getAnnotation(SystemMessage.class);
@@ -153,7 +130,7 @@ class DefaultAiServices<T> extends AiServices<T> {
      * @param args   参数值
      * @return UserMessage
      */
-    public com.ai.domain.data.message.UserMessage analyzeUserMessageAnnotationOnMethod(Method method, Parameter[] parameters, Object[] args) {
+    public com.ai.domain.data.message.UserMessage UserMessageOnMethod(Method method, Parameter[] parameters, Object[] args) {
         // 解析方法参数当中被@V修饰的参数
         Map<String, String> variables = getPromptTemplateVariables(args, parameters);
         UserMessage annotation = method.getAnnotation(UserMessage.class);
@@ -176,7 +153,7 @@ class DefaultAiServices<T> extends AiServices<T> {
      * @param args   参数值
      * @return UserMessage
      */
-    public com.ai.domain.data.message.UserMessage analyzeUserMessageAnnotationOnArg(Method method, Object[] args) {
+    public com.ai.domain.data.message.UserMessage userMessageOnArgs(Method method, Object[] args) {
         Parameter[] parameters = method.getParameters();
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
@@ -186,7 +163,7 @@ class DefaultAiServices<T> extends AiServices<T> {
                     return new com.ai.domain.data.message.UserMessage((String) args[i]);
                 }
                 // 当@UserMessage修饰的是某个被@Prompt注解的对象时，解析成模板返回映射后的字符串
-                String prompt = analyzePromptAnnotation(parameterTypes[i], args[i]);
+                String prompt = prompt(parameterTypes[i], args[i]);
                 if (StrUtil.isNotEmpty(prompt))
                     return new com.ai.domain.data.message.UserMessage(prompt);
             }
@@ -194,11 +171,29 @@ class DefaultAiServices<T> extends AiServices<T> {
         return null;
     }
 
+    private void chatConfig(ChatConfig chatConfig) {
+        if (chatConfig == null) return;
+        try {
+            Class<?> chat = chatConfig.chat();
+            Class<?> memory = chatConfig.memory();
+            Class<?> moderate = chatConfig.moderate();
+            if (chat != null) context.setChatModel((ChatModel) chat.getDeclaredConstructor().newInstance());
+            if (memory != null)
+                context.setChatHistoryRecorder((ChatHistoryRecorder) memory.getDeclaredConstructor().newInstance());
+            if (moderate != null)
+                context.setModerationModel((ModerationModel) moderate.getDeclaredConstructor().newInstance());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public T build() {
+        Class<?> serviceClass = context.getAiServiceClass();
+        chatConfig(serviceClass.getAnnotation(ChatConfig.class));
         performValidation();
-        Object proxyInstance = Proxy.newProxyInstance(context.getAiServiceClass().getClassLoader(), new Class<?>[]{context.getAiServiceClass()}, new InvocationHandler() {
-//  todo 审核模型的调用
-//            private final ExecutorService executor = Executors.newCachedThreadPool();
+        Object proxyInstance = Proxy.newProxyInstance(serviceClass.getClassLoader(), new Class<?>[]{serviceClass}, new InvocationHandler() {
+
+            private final ExecutorService executor = Executors.newCachedThreadPool();
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
@@ -208,29 +203,38 @@ class DefaultAiServices<T> extends AiServices<T> {
                 }
                 Parameter[] parameters = method.getParameters();
                 Class<?>[] parameterTypes = method.getParameterTypes();
-                // 解析各个注解
-                analyzeMemoryAnnotation(method);
-                analyzeMemoryIdAnnotation(parameters, parameterTypes, args);
-                analyzeModerateAnnotation(method);
-                com.ai.domain.data.message.SystemMessage systemMessage = analyzeSystemMessageAnnotation(method, parameters, args);
-                com.ai.domain.data.message.UserMessage userMessageOnMethod = analyzeUserMessageAnnotationOnMethod(method, parameters, args);
-                com.ai.domain.data.message.UserMessage userMessage = userMessageOnMethod == null ? analyzeUserMessageAnnotationOnArg(method, args) : userMessageOnMethod;
+                String memoryId = memoryId(parameters, parameterTypes, args);
+                com.ai.domain.data.message.SystemMessage systemMessage = systemMessage(method, parameters, args);
+                com.ai.domain.data.message.UserMessage userMessageOnMethod = UserMessageOnMethod(method, parameters, args);
+                com.ai.domain.data.message.UserMessage userMessage = userMessageOnMethod == null ? userMessageOnArgs(method, args) : userMessageOnMethod;
                 if (userMessage == null) {
                     throw Exceptions.illegalArgument("Unable to locate chat parameters");
                 }
+                Future<Moderation> moderationFuture = triggerModerationIfNeeded(method, userMessage.getText());
                 ChatHistoryRecorder chatHistoryRecorder = context.getChatHistoryRecorder();
                 ChatModel chatModel = context.getChatModel();
-                // 添加系统消息
-                chatHistoryRecorder.add(systemMessage);
-                // 添加用户消息
-                chatHistoryRecorder.add(userMessage);
-                // 发起请求
-                AssistantMessage data = chatModel.generate(chatHistoryRecorder.getCurrentMessages()).getData();
-                // 记录结果
-                chatHistoryRecorder.add(data);
+                AssistantMessage data;
+                if (memoryId != null && chatHistoryRecorder != null) {// 不为空，进行消息的记录
+                    if (systemMessage != null) chatHistoryRecorder.add(systemMessage);
+                    chatHistoryRecorder.add(userMessage); // 添加用户消息
+                    data = chatModel.generate(chatHistoryRecorder.getCurrentMessages()).getData();// 发起请求
+                    chatHistoryRecorder.add(data);// 记录结果
+                } else {// 为空，相当于单次对话
+                    ArrayList<ChatMessage> chatMessages = new ArrayList<>();
+                    if (systemMessage != null) chatMessages.add(systemMessage);
+                    chatMessages.add(userMessage);
+                    data = chatModel.generate(chatMessages).getData();
+                }
+                verifyModerationIfNeeded(moderationFuture);
                 AiResponse<AssistantMessage> response = new AiResponse<>(data, null, FinishReason.SUCCESS);
-                // 将结果转换为接口所需的返回类型
                 return ServiceOutputParser.parse(response, method.getReturnType());
+            }
+
+            private Future<Moderation> triggerModerationIfNeeded(Method method, String userMessage) {
+                if (method.isAnnotationPresent(Moderate.class) && context.getModerationModel() != null) {
+                    return executor.submit(() -> context.getModerationModel().moderate(userMessage).getData());
+                }
+                return null;
             }
         });
 
