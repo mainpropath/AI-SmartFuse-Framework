@@ -1,7 +1,7 @@
 ## **目录**
 
 - [**项目背景**](#项目背景)
-- [**安装**](#安装)
+- [**使用方式**](#使用方式)
 - [**目前主要功能**](#目前主要功能)
     * [**对话链**](#对话链)
     * [**对话检索链**](#对话检索链)
@@ -13,7 +13,7 @@
     * [**对话消息存储**](#对话消息存储)
     * [**向量化消息存储**](#向量化消息存储)
 
-## **项目背景**
+## [**项目背景**](#项目背景)
 
 ![star-history-2024115](doc/img/star-history-2024124.png)
 
@@ -31,15 +31,15 @@
 
 模型基座：考虑到不同厂商的模型实现方式不同，在模型调用和链路节点之间增加一层，向下屏蔽掉不同的模型调用方式，向上表现出统一的API口径。
 
-## **安装**
+## [**使用方式**](#使用方式)
 
 将项目下载到本地后install，引入pom文件当中。
 
-## [**目前主要功能**](#目前主要功能)
+## [**目前**](#目前主要功能)
 
 目前本框架已接入openai相关模型，百度文心一言和讯飞星火模型正在接入当中。
 
-### **对话链 **
+### **对话链**
 
 **创建对话链**，其中 chatModel 为使用的对话模型。historyRecorder 为历史上下文记录器。对于 historyRecorder 而言，其底层的消息存储器 ChatMemoryStore 可以共用。即
 historyRecorder 与 ChatMemoryStore 可以是一对一，也可以是一对多的关系。具体可阅读源码体会。
@@ -62,7 +62,7 @@ String res1=conversationalChain.run("你好，请记住我的名字叫做小明"
 
 测试用例路径：[ConversationalChainTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/chain/ConversationalChainTest.java)
 
-### **对话检索链 **
+### **对话检索链**
 
 对话检索链可导入 txt、excel、word、ppt、pdf、html 当中的数据作为对话时的数据依据。其步骤如下：
 
@@ -164,7 +164,7 @@ String res2 = assistant.chatWithMemory("请记住，我的名字叫小明。", 1
 
 测试用例路径：[ServiceTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/service/ServiceTest.java)
 
-## **其他示例**
+## [**其他示例**](#其他示例)
 
 ### **模板替换**
 
