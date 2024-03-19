@@ -7,7 +7,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 通过此注解来标识模板信息
+ * 通过此注解来标识系统信息
  */
 @Target(METHOD)
 @Retention(RUNTIME)

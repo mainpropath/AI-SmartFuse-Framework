@@ -1,6 +1,7 @@
 package com.ai.openai.service;
 
 
+import com.ai.common.resp.AiResponse;
 import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.data.message.AssistantMessage;
 import com.ai.domain.service.AiServices;
@@ -33,9 +34,7 @@ public class ServiceTest {
         configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
         OpenAiClient.SetConfiguration(configuration);
         // JDK动态代理
-        assistant = AiServices.builder(Assistant.class)
-                .chat(new OpenaiChatModel())
-                .build();
+        assistant = AiServices.builder(Assistant.class).build();
     }
 
     @Test
@@ -83,7 +82,7 @@ public class ServiceTest {
 
     @Test
     public void test_chat_with_moderate() {
-        String res = assistant.chatWithModerate("我要杀了你");
+        AiResponse<AssistantMessage> res = assistant.chatWithModerate("我要杀了你");
         System.out.println(res);
     }
 
@@ -103,7 +102,7 @@ public class ServiceTest {
         String chatWithTemplate(@V("dish") String dish);
 
         @Moderate
-        String chatWithModerate(@UserMessage String message);
+        AiResponse<AssistantMessage> chatWithModerate(@UserMessage String message);
     }
 
     @Data
