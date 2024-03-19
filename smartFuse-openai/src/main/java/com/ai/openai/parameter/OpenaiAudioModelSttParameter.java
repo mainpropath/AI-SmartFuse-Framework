@@ -20,7 +20,7 @@ public class OpenaiAudioModelSttParameter implements Parameter<OpenaiAudioSttPar
 
     @Override
     public OpenaiAudioSttParameter getParameter() {
-        return parameter;
+        return this.parameter;
     }
 
     @Override

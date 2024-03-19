@@ -14,5 +14,4 @@ public class UserMessage extends ChatMessage {
         return MessageType.USER;
     }
 
-
 }

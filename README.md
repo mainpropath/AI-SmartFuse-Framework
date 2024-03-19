@@ -1,11 +1,19 @@
-## 目录
+## **目录**
 
 - [**项目背景**](#项目背景)
-- [**安装**](#安装)
+- [**使用方式**](#使用方式)
 - [**目前主要功能**](#目前主要功能)
+    * [**对话链**](#对话链)
+    * [**对话检索链**](#对话检索链)
+    * [**注解配置对话**](#注解配置对话)
 - [**其他示例**](#其他示例)
+    * [**模板替换**](#模板替换)
+    * [**文件加载**](#文件加载)
+    * [**文本拆分**](#文本拆分)
+    * [**对话消息存储**](#对话消息存储)
+    * [**向量化消息存储**](#向量化消息存储)
 
-## **项目背景**
+## [**项目背景**](#项目背景)
 
 ![star-history-2024115](doc/img/star-history-2024124.png)
 
@@ -23,21 +31,21 @@
 
 模型基座：考虑到不同厂商的模型实现方式不同，在模型调用和链路节点之间增加一层，向下屏蔽掉不同的模型调用方式，向上表现出统一的API口径。
 
-## **安装**
+## [**使用方式**](#使用方式)
 
-将项目下载到本地后install后，将引入pom文件当中。
+将项目下载到本地后install，引入pom文件当中。
 
 ## [**目前主要功能**](#目前主要功能)
 
-目前本框架已接入openai相关模型，国内大模型待接入中。
+目前本框架已接入openai相关模型，百度文心一言和讯飞星火模型正在接入当中。
 
-### **对话链 ConversationalChain**
+### **对话链**
 
 **创建对话链**，其中 chatModel 为使用的对话模型。historyRecorder 为历史上下文记录器。对于 historyRecorder 而言，其底层的消息存储器 ChatMemoryStore 可以共用。即
 historyRecorder 与 ChatMemoryStore 可以是一对一，也可以是一对多的关系。具体可阅读源码体会。
 
 ```java
-ConversationalChain conversationalChain = ConversationalChain.builder()
+ConversationalChain conversationalChain=ConversationalChain.builder()
         .chatModel(new OpenaiChatModel())// 对话模型
         .historyRecorder(OpenaiChatHistoryRecorder.builder().build())// 历史消息记录器
         .build();
@@ -46,15 +54,15 @@ ConversationalChain conversationalChain = ConversationalChain.builder()
 **开始对话**，ConversationalChain 自带记录历史对话功能，其记录方式跟具体的historyRecorder实例有关。historyRecorder 通过内部的 ChatMemoryStore 存放对话信息。
 
 ```java
-String res1 = conversationalChain.run("你好，请记住我的名字叫做小明");
-System.out.println(res1);// 你好，小明！很高兴认识你。
-String res2 = conversationalChain.run("我的名字是什么？");
-System.out.println(res2);// 你的名字是小明。
+String res1=conversationalChain.run("你好，请记住我的名字叫做小明");
+        System.out.println(res1);// 你好，小明！很高兴认识你。
+        String res2=conversationalChain.run("我的名字是什么？");
+        System.out.println(res2);// 你的名字是小明。
 ```
 
 测试用例路径：[ConversationalChainTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/chain/ConversationalChainTest.java)
 
-### **对话检索链 ConversationalRetrievalChain**
+### **对话检索链**
 
 对话检索链可导入 txt、excel、word、ppt、pdf、html 当中的数据作为对话时的数据依据。其步骤如下：
 
@@ -71,23 +79,23 @@ System.out.println(res2);// 你的名字是小明。
 
 ```java
 // 测试文件路径
-String[] filePath = {"filePath1","filePath2","filePath3"};
+String[]filePath={"filePath1","filePath2","filePath3"};
 // 创建嵌入数据导入器，这里可以设置你指定的存储器，也可以直接使用其中默认的存储器。
-OpenaiEmbeddingStoreIngestor ingestor = OpenaiEmbeddingStoreIngestor.builder().build();
-List<Document> documents = new ArrayList<>();
+        OpenaiEmbeddingStoreIngestor ingestor=OpenaiEmbeddingStoreIngestor.builder().build();
+        List<Document> documents=new ArrayList<>();
 // 导入数据并放入List当中
-for (String file : filePath) {
-	// 导入数据封装为Document
-    documents.add(FileSystemDocumentLoader.loadDocument(toPath(file)));
-}
+        for(String file:filePath){
+        // 导入数据封装为Document
+        documents.add(FileSystemDocumentLoader.loadDocument(toPath(file)));
+        }
 // 将数据导入到存储器当中，其中自动进行文本分割和向量化处理
-ingestor.ingest(documents);
+        ingestor.ingest(documents);
 ```
 
 **创建对话检索链**，模板替换过程将会交给程序自动完成。
 
 ```java
-ConversationalRetrievalChain conversationalRetrievalChain = ConversationalRetrievalChain.builder()
+ConversationalRetrievalChain conversationalRetrievalChain=ConversationalRetrievalChain.builder()
         .chatModel(new OpenaiChatModel())// 设置对话模型
         .embeddingModel(new OpenaiEmbeddingModel())// 设置向量化模型
         .historyRecorder(OpenaiChatHistoryRecorder.builder().build())// 设置历史消息记录器
@@ -98,14 +106,65 @@ ConversationalRetrievalChain conversationalRetrievalChain = ConversationalRetrie
 **开始对话**，自动根据向量化后的数据选取相关性最高的文本片段作为依据进行回答。默认情况下：相关性大于 0.7 的前 2 个文本片段将会作为对话依据。
 
 ```java
-String question = "询问的问题";
-String res = conversationalRetrievalChain.run(question);
-System.out.println(res);
+String question="询问的问题";
+        String res=conversationalRetrievalChain.run(question);
+        System.out.println(res);
 ```
 
 测试用例路径：[ConversationalRetrievalChainTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/chain/ConversationalRetrievalChainTest.java)
 
-## **其他示例**
+### **注解配置对话**
+
+| 注解名         | 作用范围       | 描述                                                   |
+| -------------- | -------------- | ------------------------------------------------------ |
+| @ChatConfig    | 类             | 用于标识使用的对话模型，审核模型，消息存储器           |
+| @MemoryId      | 方法参数       | 用于标识消息存储的ID                                   |
+| @Moderate      | 方法           | 用于标识该方法是否需要进行审核                         |
+| @Prompt        | 类             | 用于标识这个类是模板类，和@UserMessage一起使用         |
+| @SystemMessage | 方法           | 用于标识系统消息                                       |
+| @UserMessage   | 方法、方法参数 | 用于标识用户消息                                       |
+| @V             | 方法参数       | 用于动态替换@SystemMessage和@UserMessage中设置占位符。 |
+
+**和openai相关模型结合使用**
+
+```java
+
+@ChatConfig(chat = OpenaiChatModel.class, memory = OpenaiChatHistoryRecorder.class, moderate = OpenaiModerationModel.class)
+interface Assistant {
+    AssistantMessage simpleChat(@UserMessage String message);
+
+    @SystemMessage("你是一位在{{major}}专业学识渊博的学者")
+    String chatWithScholar(@UserMessage String message, @V("major") String major);
+
+    @SystemMessage("你是一位营养学专家，请根据以下信息，回答以下提问。")
+    String chatWithNutritionExperts(@UserMessage User userData);
+
+    String chatWithMemory(@UserMessage String message, @MemoryId Integer memoryId);
+
+    @UserMessage("你能教我{{dish}}这道菜的做法吗？")
+    String chatWithTemplate(@V("dish") String dish);
+
+    @Moderate
+    String chatWithModerate(@UserMessage String message);
+}
+```
+
+**AiServices生成代理类方式**
+
+```
+Assistant assistant = AiServices.builder(Assistant.class).build();
+```
+
+**通过生成的代理类直接调用即可，方法允许的返回参数类型为：String、AiResponse<AssistantMessage>、AssistantMessage**
+
+```
+String res1 = assistant.chatWithTemplate("鱼香肉丝");
+String res2 = assistant.chatWithMemory("请记住，我的名字叫小明。", 1);
+```
+
+测试用例路径：[ServiceTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/service/ServiceTest.java)
+
+## [**其他示例**](#其他示例)
 
 ### **模板替换**
 
@@ -115,42 +174,42 @@ System.out.println(res);
 
 ```java
 // 提示词模板，需要替换的地方用{{}}包括，其中 key 为 money
-String promptTemplateString = "我有一辆价值{{money}}的车，它的品牌是：{{brand}}。";
+String promptTemplateString="我有一辆价值{{money}}的车，它的品牌是：{{brand}}。";
 // 提示词的名称，标识这个提示词是干什么的
-String templateName = "汽车提示词";
-SimplePromptTemplate simplePromptTemplate = new SimplePromptTemplate(promptTemplateString, templateName);
+        String templateName="汽车提示词";
+        SimplePromptTemplate simplePromptTemplate=new SimplePromptTemplate(promptTemplateString,templateName);
 ```
 
 **替换内容 — apply 方法**
 
 ```java
-Map<String, String> map = new HashMap<>();
-map.put("money", "100万");
-map.put("brand", "宝马");
+Map<String, String> map=new HashMap<>();
+        map.put("money","100万");
+        map.put("brand","宝马");
 // 传入一个包含关键字的Map，返回一个应用示例。其中会记录其对应的模板信息
-SimplePrompt apply = simplePromptTemplate.apply(map);
-System.out.println(apply);// SimplePrompt(text=我有一辆价值100万的车，它的品牌是：宝马。)
-System.out.println(apply.text());// 我有一辆价值100万的车，它的品牌是：宝马。
-System.out.println(apply.getPromptTemplate());// SimplePromptTemplate{template='我有一辆价值{{money}}的车，它的品牌是：{{brand}}。', promptName='汽车提示词', renderMap={}}
+        SimplePrompt apply=simplePromptTemplate.apply(map);
+        System.out.println(apply);// SimplePrompt(text=我有一辆价值100万的车，它的品牌是：宝马。)
+        System.out.println(apply.text());// 我有一辆价值100万的车，它的品牌是：宝马。
+        System.out.println(apply.getPromptTemplate());// SimplePromptTemplate{template='我有一辆价值{{money}}的车，它的品牌是：{{brand}}。', promptName='汽车提示词', renderMap={}}
 ```
 
 **替换内容 — render 方法**
 
 ```java
-Map<String, String> map = new HashMap<>();
-map.put("money", "50万");
-map.put("brand", "奔驰");
+Map<String, String> map=new HashMap<>();
+        map.put("money","50万");
+        map.put("brand","奔驰");
 // 直接渲染，返回字符串
-String render = simplePromptTemplate.render(map);
-System.out.println(render);// 我有一辆价值50万的车，它的品牌是：奔驰。
+        String render=simplePromptTemplate.render(map);
+        System.out.println(render);// 我有一辆价值50万的车，它的品牌是：奔驰。
 ```
 
 ```java
 // 将需要渲染的数据跟模板进行绑定
-simplePromptTemplate.add("money", "50万");
-simplePromptTemplate.add("brand", "奔驰");
-String render = simplePromptTemplate.render();
-System.out.println(render);
+simplePromptTemplate.add("money","50万");
+        simplePromptTemplate.add("brand","奔驰");
+        String render=simplePromptTemplate.render();
+        System.out.println(render);
 ```
 
 测试用例路径：[PromptTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-domain/src/test/java/com/ai/domain/prompt/PromptTest.java)
@@ -160,18 +219,18 @@ System.out.println(render);
 文件加载可加载html、txt、pdf、word、excel、ppt当中的文本信息。对外暴露成统一的方法，在方法内部判断加载文件的类型，选择不同的文件加载器。
 
 ```java
-String[] filePaths = {
+String[]filePaths={
         "文件路径\\中文测试.txt",
         "文件路径\\中文测试.docx",
         "文件路径\\中文测试.pdf",
         "文件路径\\中文测试.xlsx",
         "文件路径\\中文测试.pptx"
-};
-for (String filePath : filePaths) {
-    Document document = FileSystemDocumentLoader.loadDocument(filePath);
-    System.out.println(document.text());// 输出加载的文本数据
-    System.out.println(document.metadata());// 输出文本元数据，包括文件路径等
-}
+        };
+        for(String filePath:filePaths){
+        Document document=FileSystemDocumentLoader.loadDocument(filePath);
+        System.out.println(document.text());// 输出加载的文本数据
+        System.out.println(document.metadata());// 输出文本元数据，包括文件路径等
+        }
 ```
 
 测试用例路径：[DocumentTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-domain/src/test/java/com/ai/domain/document/DocumentTest.java)
@@ -181,8 +240,8 @@ for (String filePath : filePaths) {
 文本拆分可将大型文本拆分，支持的拆分粒度为：块、段、句、词。
 
 ```java
-DocumentByCharacterSplitter documentByCharacterSplitter = new DocumentByCharacterSplitter(1000, 1);
-String[] split = documentByCharacterSplitter.split(document.text());
+DocumentByCharacterSplitter documentByCharacterSplitter=new DocumentByCharacterSplitter(1000,1);
+        String[]split=documentByCharacterSplitter.split(document.text());
 ```
 
 测试用例路径：[SplitterTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-domain/src/test/java/com/ai/domain/document/SplitterTest.java)

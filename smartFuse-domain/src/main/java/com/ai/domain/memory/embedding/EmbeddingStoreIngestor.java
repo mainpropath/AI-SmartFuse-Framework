@@ -10,10 +10,10 @@ import java.util.List;
  */
 public interface EmbeddingStoreIngestor {
 
-    public void ingest(Document document);
+    void ingest(Document document);
 
-    public void ingest(Document... documents);
+    void ingest(Document... documents);
 
-    public void ingest(List<Document> documents);
+    void ingest(List<Document> documents);
 
 }

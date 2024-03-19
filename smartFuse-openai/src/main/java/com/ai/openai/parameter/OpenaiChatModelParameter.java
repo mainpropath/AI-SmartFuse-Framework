@@ -19,7 +19,7 @@ public class OpenaiChatModelParameter implements Parameter<OpenaiChatParameter> 
 
     @Override
     public OpenaiChatParameter getParameter() {
-        return parameter;
+        return this.parameter;
     }
 
     @Override

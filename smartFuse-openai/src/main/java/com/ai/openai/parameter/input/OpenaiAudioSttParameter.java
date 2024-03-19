@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.io.File;
+import java.io.Serializable;
 
 @Data
 @Builder
@@ -13,7 +14,7 @@ import java.io.File;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OpenaiAudioSttParameter {
+public class OpenaiAudioSttParameter implements Serializable {
 
 
     /**

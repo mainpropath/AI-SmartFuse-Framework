@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface EmbeddingStoreRetriever<Metadata> {
 
-    public List<Metadata> findRelevant(Embedding embedding, int maxResults, double minScore);
+    List<Metadata> findRelevant(Embedding embedding, int maxResults, double minScore);
 
-    public List<Metadata> findRelevant(Embedding embedding);
+    List<Metadata> findRelevant(Embedding embedding);
 
 }

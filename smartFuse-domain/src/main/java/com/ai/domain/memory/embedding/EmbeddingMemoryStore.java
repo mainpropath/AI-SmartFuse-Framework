@@ -7,13 +7,13 @@ import java.util.List;
  */
 public interface EmbeddingMemoryStore<Data> {
 
-    public String add(Data embedding);
+    String add(Data embedding);
 
-    public void add(String id, Data embedding);
+    void add(String id, Data embedding);
 
-    public List<String> addAll(List<Data> embedding);
+    List<String> addAll(List<Data> embedding);
 
-    public List<Data> getAllData();
+    List<Data> getAllData();
 
 }
 

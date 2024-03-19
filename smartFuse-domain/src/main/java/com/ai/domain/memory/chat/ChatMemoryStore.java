@@ -9,10 +9,19 @@ import java.util.List;
  */
 public interface ChatMemoryStore {
 
-    List<ChatMessage> getMessages(Object msg);
+    /**
+     * 根据ID获取对话信息列表
+     */
+    List<ChatMessage> getMessages(String memoryId);
 
-    void updateMessages(Object msg, List<ChatMessage> msgList);
+    /**
+     * 根据ID修改对话信息列表
+     */
+    void updateMessages(String memoryId, List<ChatMessage> msgList);
 
-    void deleteMessages(Object msg);
+    /**
+     * 根据ID删除对话信息列表
+     */
+    void deleteMessages(String memoryId);
 
 }

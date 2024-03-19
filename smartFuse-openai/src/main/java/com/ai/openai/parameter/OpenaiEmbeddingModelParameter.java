@@ -20,7 +20,7 @@ public class OpenaiEmbeddingModelParameter implements Parameter<OpenaiEmbeddingP
 
     @Override
     public OpenaiEmbeddingParameter getParameter() {
-        return parameter;
+        return this.parameter;
     }
 
     @Override
