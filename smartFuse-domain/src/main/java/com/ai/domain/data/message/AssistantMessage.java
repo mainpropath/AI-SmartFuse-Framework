@@ -9,6 +9,10 @@ public class AssistantMessage extends ChatMessage {
         super(text);
     }
 
+    public static AssistantMessage message(String message) {
+        return new AssistantMessage(message);
+    }
+
     @Override
     public MessageType type() {
         return MessageType.ASSISTANT;

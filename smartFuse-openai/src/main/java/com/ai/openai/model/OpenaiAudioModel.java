@@ -6,6 +6,7 @@ import com.ai.common.resp.AiResponse;
 import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.AudioModel;
+import com.ai.openai.achieve.standard.session.AudioSession;
 import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.endPoint.audio.req.SttCompletionRequest;
 import com.ai.openai.endPoint.audio.req.TtsCompletionRequest;
@@ -14,7 +15,6 @@ import com.ai.openai.parameter.OpenaiAudioModelSttParameter;
 import com.ai.openai.parameter.OpenaiAudioModelTtsParameter;
 import com.ai.openai.parameter.input.OpenaiAudioSttParameter;
 import com.ai.openai.parameter.input.OpenaiAudioTtsParameter;
-import lombok.Data;
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
 
@@ -26,9 +26,9 @@ import static com.ai.core.exception.Constants.NULL;
 /**
  * openai语音模型
  */
-@Data
 public class OpenaiAudioModel implements AudioModel {
 
+    private final AudioSession audioSession = OpenAiClient.getAggregationSession().getAudioSession();
     private Parameter<OpenaiAudioSttParameter> sttParameter;
     private Parameter<OpenaiAudioTtsParameter> ttsParameter;
 
@@ -39,6 +39,22 @@ public class OpenaiAudioModel implements AudioModel {
     public OpenaiAudioModel(Parameter<OpenaiAudioSttParameter> sttParameter, Parameter<OpenaiAudioTtsParameter> ttsParameter) {
         this.sttParameter = ensureNotNull(sttParameter, "sttParameter");
         this.ttsParameter = ensureNotNull(ttsParameter, "ttsParameter");
+    }
+
+    public Parameter<OpenaiAudioSttParameter> getSttParameter() {
+        return sttParameter;
+    }
+
+    public void setSttParameter(Parameter<OpenaiAudioSttParameter> sttParameter) {
+        this.sttParameter = sttParameter;
+    }
+
+    public Parameter<OpenaiAudioTtsParameter> getTtsParameter() {
+        return ttsParameter;
+    }
+
+    public void setTtsParameter(Parameter<OpenaiAudioTtsParameter> ttsParameter) {
+        this.ttsParameter = ttsParameter;
     }
 
     @Override
@@ -58,8 +74,9 @@ public class OpenaiAudioModel implements AudioModel {
         return createAiResponse(response);
     }
 
+
     private AiResponse<String> createAiResponse(SttCompletionResponse response) {
-        return new AiResponse<>(response.getText(), null, FinishReason.SUCCESS);
+        return AiResponse.R(response.getText(), FinishReason.success());
     }
 
     private SttCompletionRequest createRequestParameter(File speech) {

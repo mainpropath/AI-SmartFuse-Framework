@@ -9,6 +9,10 @@ public class SystemMessage extends ChatMessage {
         super(text);
     }
 
+    public static SystemMessage message(String message) {
+        return new SystemMessage(message);
+    }
+
     @Override
     public MessageType type() {
         return MessageType.SYSTEM;

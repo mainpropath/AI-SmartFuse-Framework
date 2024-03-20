@@ -13,4 +13,8 @@ public class TokenUsage {
     private Integer outputTokenCount;
     private Integer totalTokenCount;
 
+    public static TokenUsage usage(Integer inputTokenCount, Integer outputTokenCount, Integer totalTokenCount) {
+        return new TokenUsage(inputTokenCount, outputTokenCount, totalTokenCount);
+    }
+
 }

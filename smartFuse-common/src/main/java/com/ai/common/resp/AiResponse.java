@@ -16,4 +16,20 @@ public class AiResponse<T> {
     private TokenUsage tokenUsage;
     private FinishReason finishReason;
 
+    public static <T> AiResponse<T> R(T data, TokenUsage tokenUsage, FinishReason finishReason) {
+        return new AiResponse<>(data, tokenUsage, finishReason);
+    }
+
+    public static <T> AiResponse<T> R(T data) {
+        return R(data, null, null);
+    }
+
+    public static <T> AiResponse<T> R(T data, FinishReason finishReason) {
+        return R(data, null, finishReason);
+    }
+
+    public static <T> AiResponse<T> R(T data, TokenUsage tokenUsage) {
+        return R(data, tokenUsage, null);
+    }
+
 }

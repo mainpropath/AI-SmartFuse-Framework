@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 public interface ChatModel {
 
     default String generate(String userMessage) {
-        return generate(new UserMessage(userMessage)).getData().text();
+        return generate(UserMessage.message(userMessage)).getData().text();
     }
 
     default AiResponse<AssistantMessage> generate(ChatMessage... messages) {

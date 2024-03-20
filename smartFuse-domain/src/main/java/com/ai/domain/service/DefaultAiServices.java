@@ -118,7 +118,7 @@ class DefaultAiServices<T> extends AiServices<T> {
                 throw Exceptions.illegalArgument("@SystemMessage's template cannot be empty");
             }
             // 将字段信息进行映射
-            return new com.ai.domain.data.message.SystemMessage(SimplePromptTemplate.render(systemMessageTemplate, variables));
+            return com.ai.domain.data.message.SystemMessage.message(SimplePromptTemplate.render(systemMessageTemplate, variables));
         }
         return null;
     }
@@ -141,7 +141,7 @@ class DefaultAiServices<T> extends AiServices<T> {
                 throw Exceptions.illegalArgument("@UserMessage's template cannot be empty");
             }
             // 将字段信息进行映射
-            return new com.ai.domain.data.message.UserMessage(SimplePromptTemplate.render(userMessageTemplate, variables));
+            return com.ai.domain.data.message.UserMessage.message(SimplePromptTemplate.render(userMessageTemplate, variables));
         }
         return null;
     }
@@ -160,12 +160,12 @@ class DefaultAiServices<T> extends AiServices<T> {
             if (parameters[i].isAnnotationPresent(UserMessage.class)) {
                 // 当@UserMessage修饰参数时，如果是字符串类型，直接返回UserMessage
                 if (String.class.isAssignableFrom(parameterTypes[i])) {
-                    return new com.ai.domain.data.message.UserMessage((String) args[i]);
+                    return com.ai.domain.data.message.UserMessage.message((String) args[i]);
                 }
                 // 当@UserMessage修饰的是某个被@Prompt注解的对象时，解析成模板返回映射后的字符串
                 String prompt = prompt(parameterTypes[i], args[i]);
                 if (StrUtil.isNotEmpty(prompt))
-                    return new com.ai.domain.data.message.UserMessage(prompt);
+                    return com.ai.domain.data.message.UserMessage.message(prompt);
             }
         }
         return null;
@@ -226,8 +226,7 @@ class DefaultAiServices<T> extends AiServices<T> {
                     data = chatModel.generate(chatMessages).getData();
                 }
                 verifyModerationIfNeeded(moderationFuture);
-                AiResponse<AssistantMessage> response = new AiResponse<>(data, null, FinishReason.SUCCESS);
-                return ServiceOutputParser.parse(response, method.getReturnType());
+                return ServiceOutputParser.parse(AiResponse.R(data, FinishReason.success()), method.getReturnType());
             }
 
             private Future<Moderation> triggerModerationIfNeeded(Method method, String userMessage) {

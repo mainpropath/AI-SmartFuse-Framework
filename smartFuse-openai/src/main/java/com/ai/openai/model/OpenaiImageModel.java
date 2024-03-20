@@ -6,26 +6,25 @@ import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.images.Image;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.ImageModel;
+import com.ai.openai.achieve.standard.session.ImageSession;
 import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.endPoint.images.ImageObject;
 import com.ai.openai.endPoint.images.req.CreateImageRequest;
 import com.ai.openai.parameter.OpenaiImageModelParameter;
 import com.ai.openai.parameter.input.OpenaiImageParameter;
-import lombok.Data;
 
 import java.util.List;
 
 import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
 import static com.ai.core.exception.Constants.NULL;
-import static com.ai.openai.converter.BeanConverter.ImageObj2Image;
 
 /**
  * 图片生成模型
  **/
-@Data
 public class OpenaiImageModel implements ImageModel {
 
+    private final ImageSession imageSession = OpenAiClient.getAggregationSession().getImageSession();
     private Parameter<OpenaiImageParameter> parameter;
 
     public OpenaiImageModel() {
@@ -36,19 +35,27 @@ public class OpenaiImageModel implements ImageModel {
         this.parameter = ensureNotNull(parameter, "parameter");
     }
 
+    public static Image ImageObj2Image(ImageObject imageObject) {
+        return new Image(imageObject.getUrl());
+    }
+
+    public Parameter<OpenaiImageParameter> getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Parameter<OpenaiImageParameter> parameter) {
+        this.parameter = parameter;
+    }
+
     @Override
     public AiResponse<Image> create(String message) {
         ensureNotBlank(message, "message");
-        List<ImageObject> imageObjects = OpenAiClient
-                .getAggregationSession()
-                .getImageSession()
-                .createImageCompletions(NULL, NULL, NULL, createRequestParameter(message));
+        List<ImageObject> imageObjects = imageSession.createImageCompletions(NULL, NULL, NULL, createRequestParameter(message));
         return createAiResponse(imageObjects);
     }
 
     private AiResponse<Image> createAiResponse(List<ImageObject> imageObjects) {
-        Image image = ImageObj2Image(imageObjects.get(0));
-        return new AiResponse<>(image, null, FinishReason.SUCCESS);
+        return AiResponse.R(ImageObj2Image(imageObjects.get(0)), FinishReason.success());
     }
 
     private CreateImageRequest createRequestParameter(String message) {
@@ -56,6 +63,5 @@ public class OpenaiImageModel implements ImageModel {
         BeanUtil.copyProperties(parameter.getParameter(), request);
         return request;
     }
-
 
 }

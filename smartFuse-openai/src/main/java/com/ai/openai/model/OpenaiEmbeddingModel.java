@@ -3,12 +3,13 @@ package com.ai.openai.model;
 import cn.hutool.core.bean.BeanUtil;
 import com.ai.common.resp.AiResponse;
 import com.ai.common.resp.finish.FinishReason;
-import com.ai.common.resp.usage.TokenUsage;
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.document.TextSegment;
 import com.ai.domain.model.EmbeddingModel;
+import com.ai.openai.achieve.standard.session.EmbeddingSession;
 import com.ai.openai.client.OpenAiClient;
+import com.ai.openai.endPoint.embeddings.EmbeddingObject;
 import com.ai.openai.endPoint.embeddings.req.EmbeddingCompletionRequest;
 import com.ai.openai.endPoint.embeddings.resp.EmbeddingCompletionResponse;
 import com.ai.openai.parameter.OpenaiEmbeddingModelParameter;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 
 import static com.ai.common.util.ValidationUtils.*;
 import static com.ai.core.exception.Constants.NULL;
-import static com.ai.openai.converter.BeanConverter.*;
+import static com.ai.openai.converter.BeanConverter.usage2tokenUsage;
 
 /**
  * 文本嵌入模型
  **/
 public class OpenaiEmbeddingModel implements EmbeddingModel {
 
+    private final EmbeddingSession embeddingSession = OpenAiClient.getAggregationSession().getEmbeddingSession();
     private Parameter<OpenaiEmbeddingParameter> parameter;
 
     public OpenaiEmbeddingModel() {
@@ -36,22 +38,36 @@ public class OpenaiEmbeddingModel implements EmbeddingModel {
         this.parameter = ensureNotNull(parameter, "parameter");
     }
 
+    public static Embedding embeddingObj2Embedding(EmbeddingObject embeddingObject) {
+        return new Embedding(embeddingObject.getEmbedding(), embeddingObject.getContent());
+    }
+
+    public static List<Embedding> embeddingObjList2embeddingList(List<EmbeddingObject> embeddingObjects) {
+        return embeddingObjects.stream()
+                .map(embeddingObject -> embeddingObj2Embedding(embeddingObject))
+                .collect(Collectors.toList());
+    }
+
+    public Parameter<OpenaiEmbeddingParameter> getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Parameter<OpenaiEmbeddingParameter> parameter) {
+        this.parameter = parameter;
+    }
+
     @Override
     public AiResponse<Embedding> embed(String text) {
         ensureNotBlank(text, "text");
         EmbeddingCompletionResponse response = OpenAiClient.getAggregationSession().getEmbeddingSession().embeddingCompletions(NULL, NULL, NULL, text);
         Embedding embedding = embeddingObj2Embedding(response.getData().get(0));
-        TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
-        return new AiResponse<>(embedding, tokenUsage, FinishReason.SUCCESS);
+        return AiResponse.R(embedding, usage2tokenUsage(response.getUsage()), FinishReason.success());
     }
 
     public AiResponse<List<Embedding>> embed(List<String> stringList) {
         ensureNotEmpty(stringList, "stringList");
         // 发起请求
-        EmbeddingCompletionResponse embeddingCompletionResponse = OpenAiClient
-                .getAggregationSession()
-                .getEmbeddingSession()
-                .embeddingCompletions(NULL, NULL, NULL, createRequestParameter(stringList));
+        EmbeddingCompletionResponse embeddingCompletionResponse = embeddingSession.embeddingCompletions(NULL, NULL, NULL, createRequestParameter(stringList));
         return createAiResponse(embeddingCompletionResponse);
     }
 
@@ -69,8 +85,7 @@ public class OpenaiEmbeddingModel implements EmbeddingModel {
 
     private AiResponse<List<Embedding>> createAiResponse(EmbeddingCompletionResponse response) {
         List<Embedding> embeddings = embeddingObjList2embeddingList(response.getData());
-        TokenUsage tokenUsage = usage2tokenUsage(response.getUsage());
-        return new AiResponse<>(embeddings, tokenUsage, FinishReason.SUCCESS);
+        return AiResponse.R(embeddings, usage2tokenUsage(response.getUsage()), FinishReason.success());
     }
 
     private EmbeddingCompletionRequest createRequestParameter(List<String> stringList) {

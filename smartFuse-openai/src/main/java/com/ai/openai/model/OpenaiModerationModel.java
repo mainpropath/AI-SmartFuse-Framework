@@ -7,6 +7,7 @@ import com.ai.common.resp.finish.FinishReason;
 import com.ai.domain.data.moderation.Moderation;
 import com.ai.domain.data.parameter.Parameter;
 import com.ai.domain.model.ModerationModel;
+import com.ai.openai.achieve.standard.session.ModerationSession;
 import com.ai.openai.client.OpenAiClient;
 import com.ai.openai.endPoint.moderations.Categories;
 import com.ai.openai.endPoint.moderations.Result;
@@ -14,7 +15,6 @@ import com.ai.openai.endPoint.moderations.req.ModerationRequest;
 import com.ai.openai.endPoint.moderations.resp.ModerationResponse;
 import com.ai.openai.parameter.OpenaiModerationModelParameter;
 import com.ai.openai.parameter.input.OpenaiModerationParameter;
-import lombok.Data;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ import java.util.List;
 import static com.ai.common.util.ValidationUtils.*;
 import static com.ai.core.exception.Constants.NULL;
 
-@Data
 public class OpenaiModerationModel implements ModerationModel {
 
+    private final ModerationSession moderationSession = OpenAiClient.getAggregationSession().getModerationSession();
     private Parameter<OpenaiModerationParameter> parameter;
 
     public OpenaiModerationModel() {
@@ -37,20 +37,25 @@ public class OpenaiModerationModel implements ModerationModel {
         this.parameter = ensureNotNull(parameter, "parameter");
     }
 
+    public Parameter<OpenaiModerationParameter> getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Parameter<OpenaiModerationParameter> parameter) {
+        this.parameter = parameter;
+    }
+
     @Override
     public AiResponse<Moderation> moderate(String message) {
         ensureNotBlank(message, "message");
         AiResponse<List<Moderation>> moderate = moderate(Arrays.asList(message));
-        return new AiResponse<>(moderate.getData().get(0), null, FinishReason.SUCCESS);
+        return AiResponse.R(moderate.getData().get(0), FinishReason.success());
     }
 
     @Override
     public AiResponse<List<Moderation>> moderate(List<String> messages) {
         ensureNotEmpty(messages, "messages");
-        ModerationResponse moderationResponse = OpenAiClient
-                .getAggregationSession()
-                .getModerationSession()
-                .moderationCompletions(NULL, NULL, NULL, createRequestParameter(messages));
+        ModerationResponse moderationResponse = moderationSession.moderationCompletions(NULL, NULL, NULL, createRequestParameter(messages));
         return createAiResponse(messages, moderationResponse);
     }
 
@@ -85,6 +90,6 @@ public class OpenaiModerationModel implements ModerationModel {
             }
             if (!flag) moderations.add(Moderation.notFlagged());
         }
-        return new AiResponse<>(moderations, null, FinishReason.SUCCESS);
+        return AiResponse.R(moderations, FinishReason.success());
     }
 }

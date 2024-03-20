@@ -1,20 +1,31 @@
 package com.ai.common.resp.finish;
 
 
-public enum FinishReason {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    TIMEOUT("time out"),
-    ERROR("error"),
-    SUCCESS("success");
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class FinishReason {
 
-    private final String description;
+    private String description;
 
-    FinishReason(String description) {
-        this.description = description;
+    public static FinishReason Finish(String description) {
+        return new FinishReason(description);
     }
 
-    public String getDescription() {
-        return description;
+    public static FinishReason success() {
+        return new FinishReason("success");
+    }
+
+    public static FinishReason error() {
+        return new FinishReason("error");
+    }
+
+    public static FinishReason timeout() {
+        return new FinishReason("timeout");
     }
 
 }

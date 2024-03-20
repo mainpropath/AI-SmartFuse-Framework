@@ -1,7 +1,8 @@
-package com.ai.openai.converter;
+package com.ai.baidu.converter;
 
+import com.ai.baidu.common.Usage;
 import com.ai.common.resp.usage.TokenUsage;
-import com.ai.openai.common.Usage;
+
 
 public class BeanConverter {
 
