@@ -1,4 +1,4 @@
-package com.ai.openai.memory.embedding;
+package com.ai.domain.memory.embedding.impl;
 
 
 import com.ai.domain.data.embedding.CosineSimilarity;
@@ -17,10 +17,10 @@ import static java.util.Comparator.comparingDouble;
  * 嵌入数据检索器
  */
 @Builder
-public class OpenaiEmbeddingStoreRetriever implements EmbeddingStoreRetriever<EmbeddingMatch> {
+public class SimpleEmbeddingStoreRetriever implements EmbeddingStoreRetriever<EmbeddingMatch> {
 
     @Builder.Default
-    private final EmbeddingMemoryStore<Embedding> embeddingMemoryStore = new OpenaiEmbeddingMemoryStore();
+    private final EmbeddingMemoryStore<Embedding> embeddingMemoryStore = new SimpleEmbeddingMemoryStore();
     @Builder.Default
     private final int maxResults = 2;
     @Builder.Default

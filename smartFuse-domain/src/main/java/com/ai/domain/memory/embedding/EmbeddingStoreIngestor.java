@@ -10,6 +10,9 @@ import java.util.List;
  */
 public interface EmbeddingStoreIngestor {
 
+    /**
+     * 解析文档信息
+     */
     void ingest(Document document);
 
     void ingest(Document... documents);

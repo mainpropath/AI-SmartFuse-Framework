@@ -53,4 +53,12 @@ public class TextSegment {
     public int hashCode() {
         return Objects.hash(text, metadata);
     }
+
+    @Override
+    public String toString() {
+        return "TextSegment{" +
+                "text='" + text + '\'' +
+                ", metadata=" + metadata +
+                '}';
+    }
 }

@@ -1,7 +1,9 @@
-package com.ai.openai.memory.embedding;
+package com.ai.domain.memory.embedding.impl;
 
 import com.ai.domain.data.embedding.Embedding;
 import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
+import com.ai.domain.memory.embedding.EmbeddingStoreJsonCodec;
+import com.ai.domain.memory.embedding.EmbeddingStoreJsonCodecFactory;
 import com.ai.domain.spi.ServiceHelper;
 
 import java.io.IOException;
@@ -22,7 +24,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * 嵌入数据存储器，存放在内存当中
  */
 @lombok.Data
-public class OpenaiEmbeddingMemoryStore implements EmbeddingMemoryStore<Embedding> {
+public class SimpleEmbeddingMemoryStore implements EmbeddingMemoryStore<Embedding> {
 
     private static final EmbeddingStoreJsonCodec CODEC = loadCodec();
     private final Map<String, Embedding> idToEmbeddingData = new ConcurrentHashMap<>();

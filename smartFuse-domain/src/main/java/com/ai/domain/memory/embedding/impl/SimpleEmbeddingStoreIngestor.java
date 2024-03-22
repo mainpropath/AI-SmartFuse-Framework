@@ -1,4 +1,4 @@
-package com.ai.openai.memory.embedding;
+package com.ai.domain.memory.embedding.impl;
 
 
 import com.ai.domain.data.embedding.Embedding;
@@ -8,9 +8,9 @@ import com.ai.domain.document.splitter.impl.DocumentSplitters;
 import com.ai.domain.memory.embedding.EmbeddingMemoryStore;
 import com.ai.domain.memory.embedding.EmbeddingStoreIngestor;
 import com.ai.domain.model.EmbeddingModel;
-import com.ai.openai.model.OpenaiEmbeddingModel;
 import lombok.Builder;
 import lombok.Data;
+import software.amazon.awssdk.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,14 +21,14 @@ import java.util.List;
  */
 @Data
 @Builder
-public class OpenaiEmbeddingStoreIngestor implements EmbeddingStoreIngestor {
+public class SimpleEmbeddingStoreIngestor implements EmbeddingStoreIngestor {
 
     @Builder.Default
-    private DocumentSplitter splitter = DocumentSplitters.recursive(500, 0);
+    private DocumentSplitter splitter = DocumentSplitters.recursive(100, 0);
+    @NotNull
+    private EmbeddingModel embeddingModel;
     @Builder.Default
-    private EmbeddingModel embeddingModel = new OpenaiEmbeddingModel();
-    @Builder.Default
-    private EmbeddingMemoryStore<Embedding> store = new OpenaiEmbeddingMemoryStore();
+    private EmbeddingMemoryStore<Embedding> store = new SimpleEmbeddingMemoryStore();
 
     public void ingest(Document document) {
         this.ingest(Collections.singletonList(document));

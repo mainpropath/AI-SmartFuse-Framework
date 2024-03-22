@@ -4,11 +4,11 @@ package com.ai.openai.service;
 import com.ai.common.resp.AiResponse;
 import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.data.message.AssistantMessage;
+import com.ai.domain.memory.chat.impl.SimpleChatHistoryRecorder;
 import com.ai.domain.service.AiServices;
 import com.ai.domain.service.annotation.*;
 import com.ai.openai.achieve.Configuration;
 import com.ai.openai.client.OpenAiClient;
-import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
 import com.ai.openai.model.OpenaiChatModel;
 import com.ai.openai.model.OpenaiModerationModel;
 import lombok.Data;
@@ -86,7 +86,7 @@ public class ServiceTest {
         System.out.println(res);
     }
 
-    @ChatConfig(chat = OpenaiChatModel.class, memory = OpenaiChatHistoryRecorder.class, moderate = OpenaiModerationModel.class)
+    @ChatConfig(chat = OpenaiChatModel.class, memory = SimpleChatHistoryRecorder.class, moderate = OpenaiModerationModel.class)
     interface Assistant {
         AssistantMessage simpleChat(@UserMessage String message);
 

@@ -64,9 +64,7 @@ public class OpenAiTokenizer implements Tokenizer {
 
     @Override
     public int estimateTokenCountInMessages(Iterable<ChatMessage> messages) {
-        // see https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
-
-        int tokenCount = 3; // every reply is primed with <|start|>assistant<|message|>
+        int tokenCount = 3;
         for (ChatMessage message : messages) {
             tokenCount += estimateTokenCountInMessage(message);
         }
@@ -80,9 +78,9 @@ public class OpenAiTokenizer implements Tokenizer {
             tokenCount += estimateTokenCountInText(toolSpecification.name());
             tokenCount += estimateTokenCountInText(toolSpecification.description());
             tokenCount += estimateTokenCountInToolParameters(toolSpecification.parameters());
-            tokenCount += 12; // found experimentally while playing with OpenAI API
+            tokenCount += 12;
         }
-        tokenCount += 12; // found experimentally while playing with OpenAI API
+        tokenCount += 12;
         return tokenCount;
     }
 
@@ -109,4 +107,5 @@ public class OpenAiTokenizer implements Tokenizer {
     private Supplier<IllegalArgumentException> unknownModelException() {
         return () -> illegalArgument("Model '%s' is unknown to jtokkit", modelName);
     }
+
 }

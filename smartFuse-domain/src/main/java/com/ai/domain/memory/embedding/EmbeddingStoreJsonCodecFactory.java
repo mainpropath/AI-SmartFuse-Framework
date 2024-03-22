@@ -1,4 +1,4 @@
-package com.ai.openai.memory.embedding;
+package com.ai.domain.memory.embedding;
 
 
 public interface EmbeddingStoreJsonCodecFactory {

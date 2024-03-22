@@ -1,4 +1,4 @@
-package com.ai.openai.memory.chat;
+package com.ai.domain.memory.chat.impl;
 
 import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.data.message.SystemMessage;
@@ -13,25 +13,23 @@ import java.util.Optional;
 
 import static com.ai.common.util.Utils.randomUUID;
 
-/**
- * Openai历史信息记录器
- */
+
 @Data
 @Builder
-public class OpenaiChatHistoryRecorder implements ChatHistoryRecorder {
+public class SimpleChatHistoryRecorder implements ChatHistoryRecorder {
 
     @Builder.Default
     private String id = randomUUID();
     @Builder.Default
     private Integer maxMessageNumber = 100;
     @Builder.Default
-    private ChatMemoryStore memoryStore = new OpenaiChatMemoryStore();
+    private ChatMemoryStore memoryStore = new SimpleChatMemoryStore();
 
-    public OpenaiChatHistoryRecorder() {
-        this(randomUUID(), 30, new OpenaiChatMemoryStore());
+    public SimpleChatHistoryRecorder() {
+        this(randomUUID(), 30, new SimpleChatMemoryStore());
     }
 
-    public OpenaiChatHistoryRecorder(String id, Integer maxMessageNumber, ChatMemoryStore memoryStore) {
+    public SimpleChatHistoryRecorder(String id, Integer maxMessageNumber, ChatMemoryStore memoryStore) {
         this.id = id;
         this.maxMessageNumber = maxMessageNumber;
         this.memoryStore = memoryStore;

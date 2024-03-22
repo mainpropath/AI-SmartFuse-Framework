@@ -1,4 +1,4 @@
-package com.ai.openai.memory.chat;
+package com.ai.domain.memory.chat.impl;
 
 import com.ai.domain.data.message.ChatMessage;
 import com.ai.domain.memory.chat.ChatMemoryStore;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Openai历史信息存储器
  **/
 @NoArgsConstructor
-public class OpenaiChatMemoryStore implements ChatMemoryStore {
+public class SimpleChatMemoryStore implements ChatMemoryStore {
 
     private final Map<String, List<ChatMessage>> messagesByMemoryId = new ConcurrentHashMap<>();
 

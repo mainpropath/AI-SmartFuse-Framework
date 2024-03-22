@@ -2,9 +2,9 @@ package com.ai.openai.chain;
 
 import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.chain.impl.ConversationalChain;
+import com.ai.domain.memory.chat.impl.SimpleChatHistoryRecorder;
 import com.ai.openai.achieve.Configuration;
 import com.ai.openai.client.OpenAiClient;
-import com.ai.openai.memory.chat.OpenaiChatHistoryRecorder;
 import com.ai.openai.model.OpenaiChatModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ConversationalChainTest {
         // 可以在创建时指定记录器,也可以直接创建使用默认的记录器，默认存储30条消息。
         this.conversationalChain = ConversationalChain.builder()
                 .chatModel(new OpenaiChatModel())
-                .historyRecorder(OpenaiChatHistoryRecorder.builder().build())
+                .historyRecorder(SimpleChatHistoryRecorder.builder().build())
                 .build();
     }
 
@@ -44,11 +44,6 @@ public class ConversationalChainTest {
         System.out.println(res1);// 你好，小明！很高兴认识你。
         String res2 = conversationalChain.run("我的名字是什么？");
         System.out.println(res2);// 你的名字是小明。
-    }
-
-    interface Chat {
-
-        String chat(String text);
     }
 
 }
