@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.io.File;
 import java.io.Serializable;
 
 @Data
@@ -15,14 +14,6 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OpenaiAudioSttParameter implements Serializable {
-
-
-    /**
-     * 要转录的音频文件对象（不是文件名）
-     * 采用以下格式之一：flac、mp3、mp4、mpeg、mpga、m4a、ogg、wav 或 webm
-     */
-    @NonNull
-    private File file;
 
     /**
      * 使用的模型名

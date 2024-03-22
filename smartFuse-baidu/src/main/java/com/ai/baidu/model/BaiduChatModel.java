@@ -53,24 +53,21 @@ public class BaiduChatModel implements ChatModel {
     }
 
     public void setParameter(Parameter<BaiduChatParameter> parameter) {
-        this.parameter = parameter;
+        this.parameter = ensureNotNull(parameter, "parameter");
     }
 
     @Override
     public AiResponse<AssistantMessage> generate(List<ChatMessage> messages) {
         ensureNotEmpty(messages, "messages");
-        ChatResponse chatResponse = this.chatSession
-                .chat(createRequestParameter(chatMessageList2BaiduMessageList(messages)));
-        return createAiResponse(chatResponse);
-    }
-
-    private ChatRequest createRequestParameter(List<Message> messages) {
-        ChatRequest chatRequest = ChatRequest.builder().messages(messages).build();
+        // 将消息转换为百度格式的消息
+        List<Message> messageList = chatMessageList2BaiduMessageList(messages);
+        // 构造请求主要参数
+        ChatRequest chatRequest = ChatRequest.builder().messages(messageList).build();
+        // 填充请求配置属性
         BeanUtil.copyProperties(parameter.getParameter(), chatRequest);
-        return chatRequest;
-    }
-
-    private AiResponse<AssistantMessage> createAiResponse(ChatResponse chatResponse) {
+        // 发起请求获取结果
+        ChatResponse chatResponse = this.chatSession.chat(chatRequest);
+        // 转换结果为统一返回值
         AssistantMessage message = AssistantMessage.message(chatResponse.getResult());
         TokenUsage tokenUsage = BeanConverter.usage2tokenUsage(chatResponse.getUsage());
         return AiResponse.R(message, tokenUsage, FinishReason.success());

@@ -46,7 +46,7 @@ public class OpenaiAudioModel implements AudioModel {
     }
 
     public void setSttParameter(Parameter<OpenaiAudioSttParameter> sttParameter) {
-        this.sttParameter = sttParameter;
+        this.sttParameter = ensureNotNull(sttParameter, "sttParameter");
     }
 
     public Parameter<OpenaiAudioTtsParameter> getTtsParameter() {
@@ -54,41 +54,29 @@ public class OpenaiAudioModel implements AudioModel {
     }
 
     public void setTtsParameter(Parameter<OpenaiAudioTtsParameter> ttsParameter) {
-        this.ttsParameter = ttsParameter;
+        this.ttsParameter = ensureNotNull(ttsParameter, "ttsParameter");
     }
 
     @Override
     public void textToSpeech(String text, Callback<ResponseBody> callback) {
-        OpenAiClient
-                .getAggregationSession()
-                .getAudioSession()
-                .ttsCompletions(NULL, NULL, NULL, createRequestParameter(text), callback);
+        // 构造请求主要参数
+        TtsCompletionRequest request = TtsCompletionRequest.builder().input(text).build();
+        // 填充请求配置属性
+        BeanUtil.copyProperties(ttsParameter.getParameter(), request);
+        // 通过回调函数处理结果
+        audioSession.ttsCompletions(NULL, NULL, NULL, request, callback);
     }
 
     @Override
     public AiResponse<String> speechToText(File speech) {
-        SttCompletionResponse response = OpenAiClient
-                .getAggregationSession()
-                .getAudioSession()
-                .sttCompletions(NULL, NULL, NULL, createRequestParameter(speech));
-        return createAiResponse(response);
-    }
-
-
-    private AiResponse<String> createAiResponse(SttCompletionResponse response) {
-        return AiResponse.R(response.getText(), FinishReason.success());
-    }
-
-    private SttCompletionRequest createRequestParameter(File speech) {
+        // 构造请求主要参数
         SttCompletionRequest request = SttCompletionRequest.builder().file(speech).build();
+        // 填充请求配置属性
         BeanUtil.copyProperties(sttParameter.getParameter(), request);
-        return request;
-    }
-
-    private TtsCompletionRequest createRequestParameter(String text) {
-        TtsCompletionRequest request = TtsCompletionRequest.builder().input(text).build();
-        BeanUtil.copyProperties(ttsParameter.getParameter(), request);
-        return request;
+        // 发起请求获取结果
+        SttCompletionResponse response = audioSession.sttCompletions(NULL, NULL, NULL, request);
+        // 转换结果为统一返回值
+        return AiResponse.R(response.getText(), FinishReason.success());
     }
 
 }

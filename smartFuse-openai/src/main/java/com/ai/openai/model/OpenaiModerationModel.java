@@ -15,15 +15,17 @@ import com.ai.openai.endPoint.moderations.req.ModerationRequest;
 import com.ai.openai.endPoint.moderations.resp.ModerationResponse;
 import com.ai.openai.parameter.OpenaiModerationModelParameter;
 import com.ai.openai.parameter.input.OpenaiModerationParameter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.ai.common.util.ValidationUtils.*;
+import static com.ai.common.util.ValidationUtils.ensureNotEmpty;
+import static com.ai.common.util.ValidationUtils.ensureNotNull;
 import static com.ai.core.exception.Constants.NULL;
 
+@Slf4j
 public class OpenaiModerationModel implements ModerationModel {
 
     private final ModerationSession moderationSession = OpenAiClient.getAggregationSession().getModerationSession();
@@ -42,54 +44,45 @@ public class OpenaiModerationModel implements ModerationModel {
     }
 
     public void setParameter(Parameter<OpenaiModerationParameter> parameter) {
-        this.parameter = parameter;
-    }
-
-    @Override
-    public AiResponse<Moderation> moderate(String message) {
-        ensureNotBlank(message, "message");
-        AiResponse<List<Moderation>> moderate = moderate(Arrays.asList(message));
-        return AiResponse.R(moderate.getData().get(0), FinishReason.success());
+        this.parameter = ensureNotNull(parameter, "parameter");
     }
 
     @Override
     public AiResponse<List<Moderation>> moderate(List<String> messages) {
         ensureNotEmpty(messages, "messages");
-        ModerationResponse moderationResponse = moderationSession.moderationCompletions(NULL, NULL, NULL, createRequestParameter(messages));
-        return createAiResponse(messages, moderationResponse);
-    }
-
-    private ModerationRequest createRequestParameter(List<String> messages) {
+        // 构造请求主要参数
         ModerationRequest request = ModerationRequest.builder().input(messages).build();
+        // 填充请求配置属性
         BeanUtil.copyProperties(parameter.getParameter(), request);
-        return request;
+        // 发起请求获取结果
+        ModerationResponse moderationResponse = moderationSession.moderationCompletions(NULL, NULL, NULL, request);
+        // 解析结果封装为统一返回值
+        List<Moderation> moderationList = analysisResult(moderationResponse.getResults());
+        return AiResponse.R(moderationList, FinishReason.success());
     }
 
-    private AiResponse<List<Moderation>> createAiResponse(List<String> messages, ModerationResponse moderationResponse) {
+    private List<Moderation> analysisResult(List<Result> results) {
         ArrayList<Moderation> moderations = new ArrayList<>();
-        List<Result> results = moderationResponse.getResults();
         for (int i = 0; i < results.size(); i++) {
             Result res = results.get(i);
             Categories categories = res.getCategories();
             Field[] declaredFields = categories.getClass().getDeclaredFields();
-            boolean flag = false;
+            boolean flag = false;// 标记是否有违规内容
             for (Field field : declaredFields) {
-                // 确保字段是布尔类型
-                if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    try {
+                try {
+                    if ((field.getType() == boolean.class || field.getType() == Boolean.class) && field.getBoolean(categories)) {
                         field.setAccessible(true);// 设置可访问私有字段
-                        if (field.getBoolean(categories)) {// 获取字段的值
-                            moderations.add(Moderation.flagged(messages.get(i), field.getName()));
-                            flag = true;
-                            break;
-                        }
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        moderations.add(Moderation.flagged(res.getContent(), field.getName()));
+                        flag = true;
+                        break;
                     }
+                } catch (IllegalAccessException e) {
+                    log.error("analysisResult error:{}", e.getMessage());
                 }
             }
             if (!flag) moderations.add(Moderation.notFlagged());
         }
-        return AiResponse.R(moderations, FinishReason.success());
+        return moderations;
     }
+
 }

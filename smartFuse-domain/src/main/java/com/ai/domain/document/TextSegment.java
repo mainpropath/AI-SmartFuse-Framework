@@ -1,10 +1,7 @@
 package com.ai.domain.document;
 
-import lombok.Data;
-
 import java.util.Objects;
 
-@Data
 public class TextSegment {
 
     private final String text;

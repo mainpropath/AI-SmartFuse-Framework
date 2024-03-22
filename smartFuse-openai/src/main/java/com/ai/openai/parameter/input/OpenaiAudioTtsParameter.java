@@ -21,12 +21,6 @@ public class OpenaiAudioTtsParameter implements Serializable {
     private String model = Model.tts_1.getModuleName();
 
     /**
-     * 要为其生成音频的文本，最大长度为4096个字符
-     */
-    @NonNull
-    private String input;
-
-    /**
      * 声音样式
      */
     @NonNull

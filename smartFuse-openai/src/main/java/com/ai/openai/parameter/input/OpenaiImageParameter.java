@@ -24,11 +24,6 @@ public class OpenaiImageParameter implements Serializable {
     private String model = OpenaiImageParameter.Model.DALL_E_3.getName();
 
     /**
-     * 要生成的图像数。必须介于 1 和 10 之间，dall-e-3只能为1。
-     */
-    private Integer n;
-
-    /**
      * 将生成的图像的质量。 创建具有更精细细节和更高一致性的图像。
      */
     private String quality;
@@ -38,20 +33,6 @@ public class OpenaiImageParameter implements Serializable {
      */
     @JsonProperty("response_format")
     private String responseFormat;
-
-    /**
-     * 图片尺寸，默认值：1024x1024
-     * dall-e-2支持：256x256, 512x512, or 1024x1024
-     * dall-e-3支持：1024x1024, 1792x1024, or 1024x1792
-     */
-    private String size;
-
-    /**
-     * 生成的图像的样式。
-     * 此参数仅仅dall-e-3,取值范围：vivid、natural
-     * 默认值：vivid
-     */
-    private String style;
 
     /**
      * 代表最终用户的唯一标识符
@@ -79,7 +60,7 @@ public class OpenaiImageParameter implements Serializable {
         STANDARD("standard"),
         HD("hd"),
         ;
-        private final String name;
+        private final String quality;
     }
 
     /**
@@ -91,6 +72,15 @@ public class OpenaiImageParameter implements Serializable {
         VIVID("vivid"),
         NATURAL("natural"),
         ;
-        private final String name;
+        private final String style;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum Format {
+        URL("url"),
+        B64JSON("b64_json"),
+        ;
+        private final String format;
     }
 }

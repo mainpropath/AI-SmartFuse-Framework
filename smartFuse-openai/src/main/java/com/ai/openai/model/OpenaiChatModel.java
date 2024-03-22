@@ -54,29 +54,31 @@ public class OpenaiChatModel implements ChatModel {
     }
 
     public void setParameter(Parameter<OpenaiChatParameter> parameter) {
-        this.parameter = parameter;
+        this.parameter = ensureNotNull(parameter, "parameter");
     }
 
     @Override
     public AiResponse<AssistantMessage> generate(List<ChatMessage> messages) {
         ensureNotEmpty(messages, "messages");
+        // 将message转换为openai模型所需的格式
+        List<DefaultMessage> defaultMessages = chatMessageList2DefaultMessageList(messages);
+        // 构造请求主要参数
+        DefaultChatCompletionRequest request = DefaultChatCompletionRequest.builder()
+                .messages(defaultMessages).build();
+        // 填充请求配置属性
+        BeanUtil.copyProperties(parameter.getParameter(), request);
         // 发送请求获取结果
-        ChatCompletionResponse response = chatSession.chatCompletions(NULL, NULL, NULL, createRequestParameter(chatMessageList2DefaultMessageList(messages)));// 转换历史消息
+        ChatCompletionResponse response = chatSession.chatCompletions(NULL, NULL, NULL, request);
         return createAiResponse(response);
     }
 
     private AiResponse<AssistantMessage> createAiResponse(ChatCompletionResponse response) {
-        // 构造对话内容
+        // 获取对话内容
         List<ChatChoice> choices = response.getChoices();
+        // 得到模型的回复
         AssistantMessage assistantMessage = AssistantMessage.message(choices.get(choices.size() - 1).getMessage().getContent());
-        // 构造token使用情况
+        // 转换结果为统一返回值
         return AiResponse.R(assistantMessage, usage2tokenUsage(response.getUsage()), FinishReason.success());
-    }
-
-    private DefaultChatCompletionRequest createRequestParameter(List<DefaultMessage> defaultMessages) {
-        DefaultChatCompletionRequest request = DefaultChatCompletionRequest.builder().messages(defaultMessages).build();
-        BeanUtil.copyProperties(parameter.getParameter(), request);
-        return request;
     }
 
 }

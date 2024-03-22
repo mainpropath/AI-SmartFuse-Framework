@@ -14,6 +14,7 @@ import com.ai.openai.parameter.OpenaiImageModelParameter;
 import com.ai.openai.parameter.input.OpenaiImageParameter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ai.common.util.ValidationUtils.ensureNotBlank;
 import static com.ai.common.util.ValidationUtils.ensureNotNull;
@@ -35,8 +36,14 @@ public class OpenaiImageModel implements ImageModel {
         this.parameter = ensureNotNull(parameter, "parameter");
     }
 
-    public static Image ImageObj2Image(ImageObject imageObject) {
-        return new Image(imageObject.getUrl());
+    public static List<Image> imageObjList2ImageList(List<ImageObject> imageObjectList) {
+        return imageObjectList.stream()
+                .map(imageObject -> imageObj2Image(imageObject))
+                .collect(Collectors.toList());
+    }
+
+    public static Image imageObj2Image(ImageObject imageObject) {
+        return Image.from(imageObject.getUrl(), imageObject.getB64Json());
     }
 
     public Parameter<OpenaiImageParameter> getParameter() {
@@ -44,24 +51,21 @@ public class OpenaiImageModel implements ImageModel {
     }
 
     public void setParameter(Parameter<OpenaiImageParameter> parameter) {
-        this.parameter = parameter;
+        this.parameter = ensureNotNull(parameter, "parameter");
     }
 
     @Override
-    public AiResponse<Image> create(String message) {
-        ensureNotBlank(message, "message");
-        List<ImageObject> imageObjects = imageSession.createImageCompletions(NULL, NULL, NULL, createRequestParameter(message));
-        return createAiResponse(imageObjects);
-    }
-
-    private AiResponse<Image> createAiResponse(List<ImageObject> imageObjects) {
-        return AiResponse.R(ImageObj2Image(imageObjects.get(0)), FinishReason.success());
-    }
-
-    private CreateImageRequest createRequestParameter(String message) {
-        CreateImageRequest request = CreateImageRequest.baseBuild(message);
+    public AiResponse<List<Image>> create(String prompt, String size, String style, int n) {
+        ensureNotBlank(prompt, "prompt");
+        // 构造请求主要参数
+        CreateImageRequest request = CreateImageRequest.builder()
+                .prompt(prompt).size(size).style(style).n(n).build();
+        // 填充请求配置属性
         BeanUtil.copyProperties(parameter.getParameter(), request);
-        return request;
+        // 发起请求获取结果
+        List<ImageObject> imageObjectList = imageSession.createImageCompletions(NULL, NULL, NULL, request);
+        // 转换结果为统一返回值
+        return AiResponse.R(imageObjList2ImageList(imageObjectList), FinishReason.success());
     }
 
 }

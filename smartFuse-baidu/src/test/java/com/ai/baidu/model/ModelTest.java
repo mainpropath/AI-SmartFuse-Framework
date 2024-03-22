@@ -5,7 +5,11 @@ import com.ai.baidu.achieve.ApiData;
 import com.ai.baidu.achieve.Configuration;
 import com.ai.baidu.achieve.standard.session.AggregationSession;
 import com.ai.baidu.client.BaiduClient;
+import com.ai.common.resp.AiResponse;
 import com.ai.core.strategy.impl.FirstKeyStrategy;
+import com.ai.domain.data.embedding.Embedding;
+import com.ai.domain.model.ChatModel;
+import com.ai.domain.model.EmbeddingModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,9 +36,16 @@ public class ModelTest {
 
     @Test
     public void test_chat() {
-        BaiduChatModel baiduChatModel = new BaiduChatModel();
-        String s1 = baiduChatModel.generate("你好");
-        System.out.println(s1);
+        ChatModel baiduChatModel = new BaiduChatModel();
+        String res = baiduChatModel.generate("你好");
+        System.out.println(res);
+    }
+
+    @Test
+    public void test_embedding() {
+        EmbeddingModel embeddingModel = new BaiduEmbeddingModel();
+        AiResponse<Embedding> response = embeddingModel.embed("你好");
+        System.out.println(response);
     }
 
 
