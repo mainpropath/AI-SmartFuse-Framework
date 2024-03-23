@@ -14,5 +14,4 @@ public class Embedding {
 
     private String content;
 
-
 }

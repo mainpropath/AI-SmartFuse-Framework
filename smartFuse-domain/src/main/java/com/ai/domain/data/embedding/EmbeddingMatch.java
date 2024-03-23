@@ -12,6 +12,7 @@ import lombok.Data;
 public class EmbeddingMatch {
 
     private final Double score;
+
     private final Embedding embedding;
 
 }

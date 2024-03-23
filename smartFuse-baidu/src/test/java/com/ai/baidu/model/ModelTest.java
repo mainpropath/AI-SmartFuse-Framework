@@ -27,9 +27,9 @@ public class ModelTest {
         Configuration configuration = new Configuration();
         configuration.setApiHost("https://aip.baidubce.com");
         ApiData apiData = ApiData.builder()
-                .apiKey("kSwWPmJbaF8pzvi40KYILhII")
-                .secretKey("3cf0xsAsmx4HtoNpuowNYaAU8gG77d1q")
-                .appId("54863230")
+                .apiKey("**************************")
+                .secretKey("**************************")
+                .appId("**************************")
                 .build();
         configuration.setKeyList(Arrays.asList(apiData));
         configuration.setKeyStrategy(new FirstKeyStrategy<ApiData>());

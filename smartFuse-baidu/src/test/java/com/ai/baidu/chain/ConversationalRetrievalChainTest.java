@@ -59,8 +59,6 @@ public class ConversationalRetrievalChainTest {
         Document document = FileSystemDocumentLoader.loadDocument(toPath(filePath));
         // 将数据导入到存储器当中
         ingestor.ingest(document);
-        System.out.println(document.metadata());
-        System.out.println(document.text());
         // 获取存储器，并设置其对应的检索器，向检索器当中设置检索器检索的嵌入存储器。
         this.conversationalRetrievalChain = ConversationalRetrievalChain.builder()
                 .chatModel(new BaiduChatModel())
@@ -68,11 +66,6 @@ public class ConversationalRetrievalChainTest {
                 .historyRecorder(SimpleChatHistoryRecorder.builder().build())
                 .retriever(SimpleEmbeddingStoreRetriever.builder().embeddingMemoryStore(ingestor.getStore()).build())
                 .build();
-    }
-
-    @Test
-    public void test_1() {
-        System.err.println("end");
     }
 
     @Test
