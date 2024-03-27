@@ -252,14 +252,11 @@ DocumentByCharacterSplitter documentByCharacterSplitter=new DocumentByCharacterS
 
 对话消息记录器 Recorder 从某一个对话消息存储器 ChatMemoryStore 当中获取数据。
 
-记录器通过操作存储器来达到消息的记录效果。具体效果请参考测试用例。
-
-测试用例路径：[ChatMemoryTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/memory/chat/ChatMemoryTest.java)
+记录器通过操作存储器来达到消息的记录效果。具体示例在对话链和对话检索链中体现。
 
 ### **向量化消息存储**
 
 向量化消息存在三个角色，导入器（Ingestor）、检索器（Retriever）、存储器（EmbeddingMemoryStore）。
 
-导入器负责读取文件信息导入到存储器当中，检索器负责检索存储器当中的数据。具体请参考测试用例。
+导入器负责读取文件信息导入到存储器当中，检索器负责检索存储器当中的数据。具体示例在对话检索链测试类中体现。
 
-测试用例路径：[EmbeddingMemoryTest.java](https://github.com/mainpropath/AI-SmartFuse-Framework/blob/master/smartFuse-openai/src/test/java/com/ai/openai/memory/embedding/EmbeddingMemoryTest.java)
