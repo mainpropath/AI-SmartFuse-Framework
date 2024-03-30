@@ -16,18 +16,18 @@ public @interface ChatConfig {
     /**
      * 设置要使用的存储器
      */
-    Class<?> memory() default Void.class;
+    Class<?> memory() default void.class;
 
     /**
      * 设置要使用的审核模型
      *
      * @return
      */
-    Class<?> moderate() default Void.class;
+    Class<?> moderate() default void.class;
 
     /**
      * 设置要使用的对话模型
      */
-    Class<?> chat() default Void.class;
+    Class<?> chat() default void.class;
 
 }

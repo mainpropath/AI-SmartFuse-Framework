@@ -12,6 +12,7 @@ import com.ai.domain.model.ChatModel;
 import com.ai.domain.model.ModerationModel;
 import com.ai.domain.prompt.impl.SimplePromptTemplate;
 import com.ai.domain.service.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+@Slf4j
 class DefaultAiServices<T> extends AiServices<T> {
 
     DefaultAiServices(AiServiceContext context) {
@@ -43,6 +45,7 @@ class DefaultAiServices<T> extends AiServices<T> {
                 try {
                     map.put(field.getName(), field.get(arg).toString());
                 } catch (Exception e) {
+                    log.error("@Prompt Check error");
                 }
             }
             return SimplePromptTemplate.render(promptTemplate, map);
@@ -105,7 +108,6 @@ class DefaultAiServices<T> extends AiServices<T> {
      * @param method     对应的方法
      * @param parameters 参数信息
      * @param args       参数值
-     * @return
      */
     public com.ai.domain.data.message.SystemMessage systemMessage(Method method, Parameter[] parameters, Object[] args) {
         // 解析方法参数当中被@V修饰的参数
@@ -178,9 +180,9 @@ class DefaultAiServices<T> extends AiServices<T> {
             Class<?> memory = chatConfig.memory();
             Class<?> moderate = chatConfig.moderate();
             if (chat != null) context.setChatModel((ChatModel) chat.getDeclaredConstructor().newInstance());
-            if (memory != null)
+            if (memory != null && !memory.equals(void.class))
                 context.setChatHistoryRecorder((ChatHistoryRecorder) memory.getDeclaredConstructor().newInstance());
-            if (moderate != null)
+            if (moderate != null && !moderate.equals(void.class))
                 context.setModerationModel((ModerationModel) moderate.getDeclaredConstructor().newInstance());
         } catch (Exception e) {
             e.printStackTrace();
