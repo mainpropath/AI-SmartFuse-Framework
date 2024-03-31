@@ -38,7 +38,7 @@ public class ConversationalRetrievalChain implements Chain<String, String> {
         }
         promptTemplate.add("question", s);
         promptTemplate.add("information", stringBuilder.toString());
-        historyRecorder.add(new UserMessage(promptTemplate.render()));
+        historyRecorder.add(UserMessage.message(promptTemplate.render()));
         AssistantMessage data = chatModel.generate(historyRecorder.getCurrentMessages()).getData();
         historyRecorder.add(data);
         return data.text();

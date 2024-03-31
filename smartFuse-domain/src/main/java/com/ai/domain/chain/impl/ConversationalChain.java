@@ -20,7 +20,7 @@ public class ConversationalChain implements Chain<String, String> {
 
     @Override
     public String run(String s) {
-        historyRecorder.add(new UserMessage(s));
+        historyRecorder.add(UserMessage.message(s));
         AssistantMessage data = chatModel.generate(historyRecorder.getCurrentMessages()).getData();
         historyRecorder.add(data);
         return data.text();

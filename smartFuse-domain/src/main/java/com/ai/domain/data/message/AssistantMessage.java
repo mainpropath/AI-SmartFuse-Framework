@@ -5,12 +5,16 @@ package com.ai.domain.data.message;
  **/
 public class AssistantMessage extends ChatMessage {
 
-    public AssistantMessage(String text) {
-        super(text);
+    public AssistantMessage(String text, Integer order) {
+        super(text, order);
     }
 
     public static AssistantMessage message(String message) {
-        return new AssistantMessage(message);
+        return new AssistantMessage(message, -1);
+    }
+
+    public static AssistantMessage message(String message, Integer order) {
+        return new AssistantMessage(message, order);
     }
 
     @Override

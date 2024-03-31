@@ -179,12 +179,14 @@ class DefaultAiServices<T> extends AiServices<T> {
             Class<?> chat = chatConfig.chat();
             Class<?> memory = chatConfig.memory();
             Class<?> moderate = chatConfig.moderate();
-            if (chat != null) context.setChatModel((ChatModel) chat.getDeclaredConstructor().newInstance());
+            if (chat != null && !chat.equals(void.class))
+                context.setChatModel((ChatModel) chat.newInstance());
             if (memory != null && !memory.equals(void.class))
-                context.setChatHistoryRecorder((ChatHistoryRecorder) memory.getDeclaredConstructor().newInstance());
+                context.setChatHistoryRecorder((ChatHistoryRecorder) memory.newInstance());
             if (moderate != null && !moderate.equals(void.class))
-                context.setModerationModel((ModerationModel) moderate.getDeclaredConstructor().newInstance());
+                context.setModerationModel((ModerationModel) moderate.newInstance());
         } catch (Exception e) {
+            log.error(e.getMessage());
             e.printStackTrace();
         }
     }

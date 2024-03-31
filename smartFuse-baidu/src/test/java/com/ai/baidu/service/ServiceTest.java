@@ -1,22 +1,19 @@
-package com.ai.openai.service;
+package com.ai.baidu.service;
 
 
+import com.ai.baidu.achieve.ApiData;
+import com.ai.baidu.achieve.Configuration;
+import com.ai.baidu.client.BaiduClient;
+import com.ai.baidu.model.BaiduChatModel;
 import com.ai.common.resp.AiResponse;
 import com.ai.core.strategy.impl.FirstKeyStrategy;
 import com.ai.domain.data.message.AssistantMessage;
-import com.ai.domain.memory.chat.impl.SimpleChatHistoryRecorder;
 import com.ai.domain.service.AiServices;
 import com.ai.domain.service.annotation.*;
-import com.ai.openai.achieve.Configuration;
-import com.ai.openai.client.OpenAiClient;
-import com.ai.openai.model.OpenaiChatModel;
-import com.ai.openai.model.OpenaiModerationModel;
 import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.Arrays;
 
 
@@ -28,11 +25,15 @@ public class ServiceTest {
     public void test_service() {
         // 设置配置信息
         Configuration configuration = new Configuration();
-        configuration.setApiHost("https://api.openai.com");
-        configuration.setKeyList(Arrays.asList("**********************"));
-        configuration.setKeyStrategy(new FirstKeyStrategy<String>());
-        configuration.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
-        OpenAiClient.SetConfiguration(configuration);
+        configuration.setApiHost("https://aip.baidubce.com");
+        ApiData apiData = ApiData.builder()
+                .apiKey("**************************")
+                .secretKey("**************************")
+                .appId("**************************")
+                .build();
+        configuration.setKeyList(Arrays.asList(apiData));
+        configuration.setKeyStrategy(new FirstKeyStrategy<ApiData>());
+        BaiduClient.SetConfiguration(configuration);
         // JDK动态代理
         assistant = AiServices.builder(Assistant.class).build();
     }
@@ -86,8 +87,8 @@ public class ServiceTest {
         System.out.println(res);
     }
 
-//    @ChatConfig(chat = OpenaiChatModel.class)
-    @ChatConfig(chat = OpenaiChatModel.class, memory = SimpleChatHistoryRecorder.class, moderate = OpenaiModerationModel.class)
+    @ChatConfig(chat = BaiduChatModel.class)
+//    @ChatConfig(chat = OpenaiChatModel.class, memory = SimpleChatHistoryRecorder.class, moderate = OpenaiModerationModel.class)
     interface Assistant {
         AssistantMessage simpleChat(@UserMessage String message);
 

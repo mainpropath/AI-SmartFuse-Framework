@@ -59,9 +59,8 @@ public class SimpleChatHistoryRecorder implements ChatHistoryRecorder {
                 messages.remove(systemMessage.get());
             }
         }
-        messages.add(message);
         updatePolicy(messages);
-        memoryStore.updateMessages(this.id, messages);
+        memoryStore.addMessages(this.id, message);
     }
 
     /**
