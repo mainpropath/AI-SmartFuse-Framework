@@ -215,20 +215,20 @@ class DefaultAiServices<T> extends AiServices<T> {
                 Future<Moderation> moderationFuture = triggerModerationIfNeeded(method, userMessage.getText());
                 ChatHistoryRecorder chatHistoryRecorder = context.getChatHistoryRecorder();
                 ChatModel chatModel = context.getChatModel();
-                AssistantMessage data;
+                AiResponse<AssistantMessage> response;
                 if (memoryId != null && chatHistoryRecorder != null) {// 不为空，进行消息的记录
                     if (systemMessage != null) chatHistoryRecorder.add(systemMessage);
                     chatHistoryRecorder.add(userMessage); // 添加用户消息
-                    data = chatModel.generate(chatHistoryRecorder.getCurrentMessages()).getData();// 发起请求
-                    chatHistoryRecorder.add(data);// 记录结果
+                    response = chatModel.generate(chatHistoryRecorder.getCurrentMessages());// 发起请求
+                    chatHistoryRecorder.add(response.getData());// 记录结果
                 } else {// 为空，相当于单次对话
                     ArrayList<ChatMessage> chatMessages = new ArrayList<>();
                     if (systemMessage != null) chatMessages.add(systemMessage);
                     chatMessages.add(userMessage);
-                    data = chatModel.generate(chatMessages).getData();
+                    response = chatModel.generate(chatMessages);
                 }
                 verifyModerationIfNeeded(moderationFuture);
-                return ServiceOutputParser.parse(AiResponse.R(data, FinishReason.success()), method.getReturnType());
+                return ServiceOutputParser.parse(AiResponse.R(response.getData(), response.getTokenUsage(), FinishReason.success()), method.getReturnType());
             }
 
             private Future<Moderation> triggerModerationIfNeeded(Method method, String userMessage) {

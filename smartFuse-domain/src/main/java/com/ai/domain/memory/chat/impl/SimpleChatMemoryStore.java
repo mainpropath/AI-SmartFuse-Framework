@@ -25,6 +25,11 @@ public class SimpleChatMemoryStore implements ChatMemoryStore {
         this.messagesByMemoryId.put(memoryId, messages);
     }
 
+    @Override
+    public void addMessages(String memoryId, ChatMessage message) {
+        this.messagesByMemoryId.get(memoryId).add(message);
+    }
+
     public void deleteMessages(String memoryId) {
         this.messagesByMemoryId.remove(memoryId);
     }

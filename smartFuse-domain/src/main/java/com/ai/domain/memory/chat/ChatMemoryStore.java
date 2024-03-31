@@ -20,6 +20,11 @@ public interface ChatMemoryStore {
     void updateMessages(String memoryId, List<ChatMessage> msgList);
 
     /**
+     * 根据ID添加消息信息
+     */
+    void addMessages(String memoryId, ChatMessage message);
+
+    /**
      * 根据ID删除对话信息列表
      */
     void deleteMessages(String memoryId);
